@@ -94,7 +94,7 @@ namespace DisPlacePlugin
 
             Config.PlaceAnywhere = false;
             ClientState.TerritoryChanged -= TerritoryChanged;
-            CommandManager.RemoveHandler("/DisPlace");
+            CommandManager.RemoveHandler("/displace");
             Gui?.Dispose();
 
         }
@@ -110,7 +110,7 @@ namespace DisPlacePlugin
 
             Initialize();
 
-            CommandManager.AddHandler("/DisPlace", new CommandInfo(CommandHandler)
+            CommandManager.AddHandler("/displace", new CommandInfo(CommandHandler)
             {
                 HelpMessage = "load config window."
             });

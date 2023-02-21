@@ -19,7 +19,7 @@ A plugin to automatically save and load housing furniture layouts for FFXIV. It 
 * Search for "DisPlace Plugin" and click "Install"
 
 ## Usage
-Type `/DisPlace` to open the plugin screen. Most functions are only available when in Rotate Furniture mode (Housing -> Indoor/Outdoor Furnishings. Click on the Rotate button).
+Type `/displace` to open the plugin screen. Most functions are only available when in Rotate Furniture mode (Housing -> Indoor/Outdoor Furnishings. Click on the Rotate button).
 
 ## Credits
 [MakePlacePlugin](https://github.com/jawslouis/MakePlacePlugin) for making a great plugin.

@@ -3,7 +3,7 @@
   "Name": "DisPlace Plugin",
   "InternalName": "DisPlacePlugin",
   "Description": "Automatically save & load interior and exterior house layouts. Copy other housing layouts. Import/export layouts from the MakePlace program.",
-  "RepoUrl": "https://github.com/Drakansoul/DisPlaced",
+  "RepoUrl": "https://github.com/Drakansoul/DisPlace",
   "Tags": [
     "makeplace",
     "housing",
@@ -12,6 +12,6 @@
     "drakansoul",
     "displace"
   ],
-  "IconUrl": "https://raw.githubusercontent.com/Drakansoul/DisPlaced/master/icon.png",
+  "IconUrl": "https://raw.githubusercontent.com/Drakansoul/DisPlace/master/icon.png",
   "Punchline": "Automatically save & load furniture layouts in your house. Copy layouts from other houses."
 }
