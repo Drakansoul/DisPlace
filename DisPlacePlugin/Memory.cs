@@ -7,9 +7,9 @@ using Dalamud.Game;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using static MakePlacePlugin.MakePlacePlugin;
+using static DisPlacePlugin.DisPlacePlugin;
 
-namespace MakePlacePlugin
+namespace DisPlacePlugin
 {
     public unsafe class Memory
     {

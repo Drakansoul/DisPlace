@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MakePlacePlugin.Objects
+namespace DisPlacePlugin.Objects
 {
     public class HousingItem
     {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Dalamud.Configuration;
 using Dalamud.Plugin;
-using MakePlacePlugin.Objects;
+using DisPlacePlugin.Objects;
 
-namespace MakePlacePlugin
+namespace DisPlacePlugin
 {
     [Serializable]
     public class Configuration : IPluginConfiguration
@@ -28,7 +28,7 @@ namespace MakePlacePlugin
         public int LocationId = 0;
         public int LoadInterval = 400;
 
-        public string SaveLocation = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace('\\', '/') + "/MakePlace/Save/save.json";
+        public string SaveLocation = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace('\\', '/') + "/DisPlace/Save/save.json";
 
         #region Init and Save
 

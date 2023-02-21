@@ -12,9 +12,9 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiScene;
 using Lumina.Excel.GeneratedSheets;
 using Lumina.Text;
-using MakePlacePlugin.Gui;
-using MakePlacePlugin.Objects;
-using MakePlacePlugin.Util;
+using DisPlacePlugin.Gui;
+using DisPlacePlugin.Objects;
+using DisPlacePlugin.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +22,11 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace MakePlacePlugin
+namespace DisPlacePlugin
 {
-    public class MakePlacePlugin : IDalamudPlugin
+    public class DisPlacePlugin : IDalamudPlugin
     {
-        public string Name => "MakePlace Plugin";
+        public string Name => "DisPlace Plugin";
         public PluginUi Gui { get; private set; }
         public Configuration Config { get; private set; }
 
@@ -94,12 +94,12 @@ namespace MakePlacePlugin
 
             Config.PlaceAnywhere = false;
             ClientState.TerritoryChanged -= TerritoryChanged;
-            CommandManager.RemoveHandler("/makeplace");
+            CommandManager.RemoveHandler("/DisPlace");
             Gui?.Dispose();
 
         }
 
-        public MakePlacePlugin(
+        public DisPlacePlugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] CommandManager commandManager
         )
@@ -110,7 +110,7 @@ namespace MakePlacePlugin
 
             Initialize();
 
-            CommandManager.AddHandler("/makeplace", new CommandInfo(CommandHandler)
+            CommandManager.AddHandler("/DisPlace", new CommandInfo(CommandHandler)
             {
                 HelpMessage = "load config window."
             });
@@ -122,7 +122,7 @@ namespace MakePlacePlugin
             Memory.Init(Scanner);
             LayoutManager = new SaveLayoutManager(this, ChatGui, Config);
 
-            PluginLog.Log("MakePlace Plugin v2.19 initialized");
+            PluginLog.Log("DisPlace Plugin v2.19-d initialized");
         }
         public void Initialize()
         {

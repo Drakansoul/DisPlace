@@ -1,20 +1,20 @@
 ﻿using System;
-using MakePlacePlugin.Gui;
+using DisPlacePlugin.Gui;
 
-namespace MakePlacePlugin
+namespace DisPlacePlugin
 {
     public class PluginUi : IDisposable
     {
-        private readonly MakePlacePlugin _plugin;
+        private readonly DisPlacePlugin _plugin;
         public ConfigurationWindow ConfigWindow { get; }
 
-        public PluginUi(MakePlacePlugin plugin)
+        public PluginUi(DisPlacePlugin plugin)
         {
             ConfigWindow = new ConfigurationWindow(plugin);
 
             _plugin = plugin;
-            MakePlacePlugin.Interface.UiBuilder.Draw += Draw;
-            MakePlacePlugin.Interface.UiBuilder.OpenConfigUi += OnOpenConfigUi;
+            DisPlacePlugin.Interface.UiBuilder.Draw += Draw;
+            DisPlacePlugin.Interface.UiBuilder.OpenConfigUi += OnOpenConfigUi;
         }
 
         private void Draw()
@@ -30,8 +30,8 @@ namespace MakePlacePlugin
 
         public void Dispose()
         {
-            MakePlacePlugin.Interface.UiBuilder.Draw -= Draw;
-            MakePlacePlugin.Interface.UiBuilder.OpenConfigUi -= OnOpenConfigUi;
+            DisPlacePlugin.Interface.UiBuilder.Draw -= Draw;
+            DisPlacePlugin.Interface.UiBuilder.OpenConfigUi -= OnOpenConfigUi;
         }
     }
 }

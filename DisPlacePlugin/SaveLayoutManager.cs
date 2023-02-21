@@ -1,7 +1,7 @@
 ﻿using Dalamud.Game.Gui;
 using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
-using MakePlacePlugin.Objects;
+using DisPlacePlugin.Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,12 +12,12 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Text.Unicode;
 using System.Linq;
-using static MakePlacePlugin.MakePlacePlugin;
+using static DisPlacePlugin.DisPlacePlugin;
 using System.Drawing;
 using System.Globalization;
 using System.Text.Json.Serialization;
 
-namespace MakePlacePlugin
+namespace DisPlacePlugin
 {
 
     public class Transform
@@ -147,11 +147,11 @@ namespace MakePlacePlugin
     {
         public ChatGui chat;
         public static Configuration Config;
-        public static MakePlacePlugin Plugin;
+        public static DisPlacePlugin Plugin;
 
         public static List<(Color, uint)> ColorList;
 
-        public SaveLayoutManager(MakePlacePlugin plugin, ChatGui chatGui, Configuration config)
+        public SaveLayoutManager(DisPlacePlugin plugin, ChatGui chatGui, Configuration config)
         {
             chat = chatGui;
             Config = config;

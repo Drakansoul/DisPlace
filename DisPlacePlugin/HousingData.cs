@@ -4,7 +4,7 @@ using Dalamud.Data;
 using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 
-namespace MakePlacePlugin
+namespace DisPlacePlugin
 {
     public class HousingData
     {
@@ -16,7 +16,7 @@ namespace MakePlacePlugin
         private readonly Dictionary<uint, uint> _unitedDict;
         private readonly Dictionary<uint, HousingYardObject> _yardObjectDict;
 
-        private static MakePlacePlugin Plugin;
+        private static DisPlacePlugin Plugin;
 
         private HousingData(DataManager dataMgr)
         {
@@ -64,7 +64,7 @@ namespace MakePlacePlugin
 
         public static HousingData Instance { get; private set; }
 
-        public static void Init(DataManager dataMgr, MakePlacePlugin plugin)
+        public static void Init(DataManager dataMgr, DisPlacePlugin plugin)
         {
             Plugin = plugin;
             Instance = new HousingData(dataMgr);

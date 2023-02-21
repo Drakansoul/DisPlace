@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.GeneratedSheets;
 using static FFXIVClientStructs.FFXIV.Client.Game.InventoryItem;
-using static MakePlacePlugin.Utils;
+using static DisPlacePlugin.Utils;
 
-namespace MakePlacePlugin
+namespace DisPlacePlugin
 {
     public enum SortType
     {
@@ -254,7 +254,7 @@ namespace MakePlacePlugin
                 // return Marshal.PtrToStructure<HousingController>(_housingController);
                 // return *(HousingController*) _housingController;
 
-                return global::MakePlacePlugin.HousingController.Get(_housingController);
+                return global::DisPlacePlugin.HousingController.Get(_housingController);
             }
         }
 
@@ -263,7 +263,7 @@ namespace MakePlacePlugin
             get
             {
                 if (_indoorAreaData == IntPtr.Zero) return null;
-                return global::MakePlacePlugin.IndoorAreaData.Get(_indoorAreaData);
+                return global::DisPlacePlugin.IndoorAreaData.Get(_indoorAreaData);
             }
         }
     }

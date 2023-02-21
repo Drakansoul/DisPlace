@@ -1,18 +1,18 @@
 ﻿using Dalamud.Utility;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
-using MakePlacePlugin.Objects;
+using DisPlacePlugin.Objects;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using static MakePlacePlugin.MakePlacePlugin;
+using static DisPlacePlugin.DisPlacePlugin;
 
-namespace MakePlacePlugin.Gui
+namespace DisPlacePlugin.Gui
 {
-    public class ConfigurationWindow : Window<MakePlacePlugin>
+    public class ConfigurationWindow : Window<DisPlacePlugin>
     {
 
         public Configuration Config => Plugin.Config;
@@ -23,7 +23,7 @@ namespace MakePlacePlugin.Gui
         private readonly Vector4 PURPLE = new(0.26275f, 0.21569f, 0.56863f, 1f);
         private readonly Vector4 PURPLE_ALPHA = new(0.26275f, 0.21569f, 0.56863f, 0.5f);
 
-        public ConfigurationWindow(MakePlacePlugin plugin) : base(plugin)
+        public ConfigurationWindow(DisPlacePlugin plugin) : base(plugin)
         {
 
         }
@@ -127,8 +127,8 @@ namespace MakePlacePlugin.Gui
                     {
                         try
                         {
-                            var iconTex = MakePlacePlugin.Data.GetIcon(icon);
-                            var tex = MakePlacePlugin.Interface.UiBuilder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width, iconTex.Header.Height, 4);
+                            var iconTex = DisPlacePlugin.Data.GetIcon(icon);
+                            var tex = DisPlacePlugin.Interface.UiBuilder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width, iconTex.Header.Height, 4);
                             if (tex != null && tex.ImGuiHandle != IntPtr.Zero)
                                 Plugin.TextureDictionary[icon] = tex;
                         }
@@ -168,7 +168,7 @@ namespace MakePlacePlugin.Gui
             {
                 try
                 {
-                    MakePlacePlugin.LayoutManager.ExportLayout();
+                    DisPlacePlugin.LayoutManager.ExportLayout();
                 }
                 catch (Exception e)
                 {
@@ -309,7 +309,7 @@ namespace MakePlacePlugin.Gui
         {
             ImGui.Text($"{housingItem.X:N3}, {housingItem.Y:N3}, {housingItem.Z:N3}"); ImGui.NextColumn();
             ImGui.Text($"{housingItem.Rotate:N3}"); ImGui.NextColumn();
-            var stain = MakePlacePlugin.Data.GetExcelSheet<Stain>().GetRow(housingItem.Stain);
+            var stain = DisPlacePlugin.Data.GetExcelSheet<Stain>().GetRow(housingItem.Stain);
             var colorName = stain?.Name;
 
             if (housingItem.Stain != 0)
@@ -463,7 +463,7 @@ namespace MakePlacePlugin.Gui
                 var housingItem = itemList[i];
                 var displayName = housingItem.Name;
 
-                var item = MakePlacePlugin.Data.GetExcelSheet<Item>().GetRow(housingItem.ItemKey);
+                var item = DisPlacePlugin.Data.GetExcelSheet<Item>().GetRow(housingItem.ItemKey);
                 if (item != null)
                 {
                     DrawIcon(item.Icon, new Vector2(20, 20));
@@ -515,7 +515,7 @@ namespace MakePlacePlugin.Gui
 
             for (int i = 0; i < itemList.Count(); i++)
             {
-                var playerPos = MakePlacePlugin.ClientState.LocalPlayer.Position;
+                var playerPos = DisPlacePlugin.ClientState.LocalPlayer.Position;
                 var housingItem = itemList[i];
 
                 if (housingItem.ItemStruct == IntPtr.Zero) continue;
@@ -527,7 +527,7 @@ namespace MakePlacePlugin.Gui
                 if (Config.DrawDistance > 0 && (playerPos - itemPos).Length() > Config.DrawDistance)
                     continue;
                 var displayName = housingItem.Name;
-                if (MakePlacePlugin.GameGui.WorldToScreen(itemPos, out var screenCoords))
+                if (DisPlacePlugin.GameGui.WorldToScreen(itemPos, out var screenCoords))
                 {
                     ImGui.PushID("HousingItemWindow" + i);
                     ImGui.SetNextWindowPos(new Vector2(screenCoords.X, screenCoords.Y));

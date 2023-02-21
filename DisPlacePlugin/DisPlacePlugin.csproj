@@ -8,8 +8,8 @@
 	<PropertyGroup>
 		<TargetFramework>net7.0-windows</TargetFramework>
 		<LangVersion>latest</LangVersion>
-		<AssemblyTitle>MakePlacePlugin</AssemblyTitle>
-		<Product>MakePlacePlugin</Product>
+		<AssemblyTitle>DisPlacePlugin</AssemblyTitle>
+		<Product>DisPlacePlugin</Product>
 		<Version>$(PluginVersion)</Version>
 		<FileVersion>$(PluginVersion)</FileVersion>
 		<AssemblyVersion>$(PluginVersion)</AssemblyVersion>
