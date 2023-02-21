@@ -247,7 +247,7 @@ namespace MakePlacePlugin.Gui
 
             if (ImGui.Button($"Get {inOut} Layout"))
             {
-                if (IsDecorMode())
+                if (true)
                 {
                     try
                     {
