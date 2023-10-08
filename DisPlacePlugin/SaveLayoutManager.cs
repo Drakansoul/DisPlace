@@ -51,10 +51,10 @@ namespace DisPlacePlugin
 
         public Color GetColor()
         {
-            
+
             if (properties.TryGetValue("color", out object colorObj))
             {
-                var color = (string) colorObj;
+                var color = (string)colorObj;
                 return System.Drawing.ColorTranslator.FromHtml("#" + color.Substring(0, 6));
             }
 
@@ -105,7 +105,7 @@ namespace DisPlacePlugin
 
         public List<Furniture> exteriorFurniture { get; set; } = new List<Furniture>();
 
-        public Dictionary<string, string> properties { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, dynamic> properties { get; set; } = new Dictionary<string, dynamic>();
 
         public bool hasBasement()
         {
@@ -247,6 +247,7 @@ namespace DisPlacePlugin
             string jsonString = File.ReadAllText(path);
             var options = new JsonSerializerOptions();
             options.Converters.Add(new ObjectToInferredTypesConverter());
+
             Layout layout = JsonSerializer.Deserialize<Layout>(jsonString, options);
 
 
@@ -256,7 +257,7 @@ namespace DisPlacePlugin
 
             foreach (var stain in StainList)
             {
-                if (stain.Unknown5)
+                if (stain.Unknown6) // bool for whether the dye can be used for housing
                 {
                     ColorList.Add((Color.FromArgb((int)stain.Color), stain.RowId));
                 }
@@ -272,7 +273,6 @@ namespace DisPlacePlugin
             ImportFurniture(Plugin.ExteriorItemList, layout.exteriorFurniture);
 
             Plugin.Layout = layout;
-
         }
 
         public unsafe static void LoadExteriorFixtures()

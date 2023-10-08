@@ -122,7 +122,7 @@ namespace DisPlacePlugin
             Memory.Init(Scanner);
             LayoutManager = new SaveLayoutManager(this, ChatGui, Config);
 
-            PluginLog.Log("DisPlace Plugin v2.19-d initialized");
+            PluginLog.Log("DisPlace Plugin v3.1.0-d initialized");
         }
         public void Initialize()
         {
@@ -228,6 +228,12 @@ namespace DisPlacePlugin
 
                     if (item.ItemStruct == IntPtr.Zero) continue;
 
+                    if (item.CorrectLocation && item.CorrectRotation)
+                    {
+                        Log($"{item.Name} is already correctly placed");
+                        continue;
+                    }
+
                     SetItemPosition(item);
 
                     if (Config.LoadInterval > 0)
@@ -286,6 +292,10 @@ namespace DisPlacePlugin
             }
             MemInstance.WritePosition(position);
             MemInstance.WriteRotation(rotation);
+
+            rowItem.CorrectLocation = true;
+            rowItem.CorrectRotation = true;
+
         }
 
         public void ApplyLayout()
@@ -378,18 +388,23 @@ namespace DisPlacePlugin
 
                 uint furnitureKey = gameObject.housingRowId;
                 HousingItem houseItem = null;
+
+                Vector3 localPosition = new Vector3(gameObject.X, gameObject.Y, gameObject.Z);
+                float localRotation = gameObject.rotation;
+
                 if (indoors)
                 {
                     var furniture = Data.GetExcelSheet<HousingFurniture>().GetRow(furnitureKey);
                     var itemKey = furniture.Item.Value.RowId;
                     houseItem = Utils.GetNearestHousingItem(
                         InteriorItemList.Where(item => item.ItemKey == itemKey && item.Stain == gameObject.color && item.ItemStruct == IntPtr.Zero && IsSelectedFloor(item.Y)),
-                        new Vector3(gameObject.X, gameObject.Y, gameObject.Z)
+                        localPosition
                     );
                 }
                 else
                 {
-                    Vector3 localPosition = Vector3.Transform(new Vector3(gameObject.X, gameObject.Y, gameObject.Z) - PlotLocation.ToVector(), rotateVector);
+                    localPosition = Vector3.Transform(localPosition - PlotLocation.ToVector(), rotateVector);
+                    localRotation += PlotLocation.rotation;
                     var furniture = Data.GetExcelSheet<HousingYardObject>().GetRow(furnitureKey);
                     var itemKey = furniture.Item.Value.RowId;
                     houseItem = Utils.GetNearestHousingItem(
@@ -399,12 +414,17 @@ namespace DisPlacePlugin
 
                 }
 
-
                 if (houseItem == null)
                 {
                     unmatched.Add(gameObject);
                     continue;
                 }
+
+                // check if it's already correctly placed & rotated
+                var locationError = houseItem.GetLocation() - localPosition;
+                houseItem.CorrectLocation = locationError.LengthSquared() < 0.0001;
+                houseItem.CorrectRotation = localRotation - houseItem.Rotate < 0.001;
+
                 houseItem.ItemStruct = (IntPtr)gameObject.Item;
             }
 
@@ -419,6 +439,8 @@ namespace DisPlacePlugin
 
 
                 Item item;
+                Vector3 localPosition = new Vector3(gameObject.X, gameObject.Y, gameObject.Z);
+                float localRotation = gameObject.rotation;
 
                 if (indoors)
                 {
@@ -431,7 +453,9 @@ namespace DisPlacePlugin
                 }
                 else
                 {
-                    Vector3 localPosition = Vector3.Transform(new Vector3(gameObject.X, gameObject.Y, gameObject.Z) - PlotLocation.ToVector(), rotateVector);
+                    localPosition = Vector3.Transform(localPosition - PlotLocation.ToVector(), rotateVector);
+                    localRotation += PlotLocation.rotation;
+
                     var furniture = Data.GetExcelSheet<HousingYardObject>().GetRow(furnitureKey);
                     item = furniture.Item.Value;
                     houseItem = Utils.GetNearestHousingItem(
@@ -452,8 +476,15 @@ namespace DisPlacePlugin
                     continue;
                 }
 
-                houseItem.ItemStruct = (IntPtr)gameObject.Item;
+                // check if it's already correctly placed & rotated
+                var locationError = houseItem.GetLocation() - localPosition;
+                houseItem.CorrectLocation = locationError.LengthSquared() < 0.0001;
+                houseItem.CorrectRotation = localRotation - houseItem.Rotate < 0.001;
+
                 houseItem.DyeMatch = false;
+
+                houseItem.ItemStruct = (IntPtr)gameObject.Item;
+
             }
 
         }
@@ -578,9 +609,16 @@ namespace DisPlacePlugin
 
         public bool IsSelectedFloor(float y)
         {
+            if (Memory.Instance.IsOutdoors() || Layout.houseSize.Equals("Apartment")) return true;
+
             if (y < -0.001) return Config.Basement;
             if (y >= -0.001 && y < 6.999) return Config.GroundFloor;
-            if (y >= 6.999) return Config.UpperFloor;
+
+            if (y >= 6.999)
+            {
+                if (Layout.hasUpperFloor()) return Config.UpperFloor;
+                else return Config.GroundFloor;
+            }
 
             return false;
         }
