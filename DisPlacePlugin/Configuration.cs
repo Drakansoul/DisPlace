@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Dalamud.Configuration;
 using Dalamud.Plugin;
-using DisPlacePlugin.Objects;
 
 namespace DisPlacePlugin
 {

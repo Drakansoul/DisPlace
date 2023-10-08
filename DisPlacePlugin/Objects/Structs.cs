@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.GeneratedSheets;
-using static FFXIVClientStructs.FFXIV.Client.Game.InventoryItem;
-using static DisPlacePlugin.Utils;
 
 namespace DisPlacePlugin
 {

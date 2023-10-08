@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.Gui;
-using Dalamud.Logging;
-using Lumina.Excel.GeneratedSheets;
+﻿using Lumina.Excel.GeneratedSheets;
 using DisPlacePlugin.Objects;
 using System;
 using System.Collections.Generic;
@@ -8,7 +6,6 @@ using System.IO;
 using System.Numerics;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-
 using System.Text.RegularExpressions;
 using System.Text.Unicode;
 using System.Linq;

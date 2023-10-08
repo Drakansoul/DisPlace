@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Dalamud.Game;
-using Dalamud.Logging;
-using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using static DisPlacePlugin.DisPlacePlugin;
 
@@ -31,7 +28,7 @@ namespace DisPlacePlugin
             }
             catch (Exception e)
             {
-                PluginLog.Log(e, "Could not load housing memory!!");
+                Logger.Info(e, "Could not load housing memory!!");
             }
         }
 
@@ -276,7 +273,7 @@ namespace DisPlacePlugin
             }
             catch (Exception ex)
             {
-                PluginLog.LogError(ex, "Error occured while writing position!");
+                Logger.Error(ex, "Error occured while writing position!");
             }
         }
 
@@ -297,7 +294,7 @@ namespace DisPlacePlugin
             }
             catch (Exception ex)
             {
-                PluginLog.LogError(ex, "Error occured while writing rotation!");
+                Logger.Error(ex, "Error occured while writing rotation!");
             }
         }
     }

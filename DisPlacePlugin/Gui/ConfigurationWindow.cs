@@ -3,7 +3,6 @@ using Dalamud.Interface.ImGuiFileDialog;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using DisPlacePlugin.Objects;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +23,8 @@ namespace DisPlacePlugin.Gui
 
         private readonly Vector4 PURPLE = new(0.26275f, 0.21569f, 0.56863f, 1f);
         private readonly Vector4 PURPLE_ALPHA = new(0.26275f, 0.21569f, 0.56863f, 0.5f);
+
+        private FileDialogManager FileDialogManager { get; }
 
         public ConfigurationWindow(DisPlacePlugin plugin) : base(plugin)
         {
@@ -176,7 +177,7 @@ namespace DisPlacePlugin.Gui
                 {
                     try
                     {
-                        MakePlacePlugin.LayoutManager.ExportLayout();
+                        DisPlacePlugin.LayoutManager.ExportLayout();
                     }
                     catch (Exception e)
                     {
@@ -304,22 +305,13 @@ namespace DisPlacePlugin.Gui
 
             if (ImGui.Button($"Get {inOut} Layout"))
             {
-                if (true)
+                try
                 {
-                    try
-                    {
-                        Plugin.LoadLayout();
-                    }
-                    catch (Exception e)
-                    {
-                        LogError($"Error: {e.Message}", e.StackTrace);
-                    }
+                    Plugin.LoadLayout();
                 }
-                else
+                catch (Exception e)
                 {
-                    LogError("Unable to load layouts outside of Layout mode");
-                    LogError("(Housing -> Indoor/Outdoor Furnishings)");
-
+                    LogError($"Error: {e.Message}", e.StackTrace);
                 }
             }
             ImGui.SameLine();

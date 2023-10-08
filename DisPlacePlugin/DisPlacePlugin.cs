@@ -1,25 +1,16 @@
-﻿using Dalamud.Data;
-using Dalamud.Game;
-using Dalamud.Game.ClientState;
+﻿using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Network;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using ImGuiScene;
 using Lumina.Excel.GeneratedSheets;
-using Lumina.Text;
-using DisPlacePlugin.Gui;
 using DisPlacePlugin.Objects;
 using DisPlacePlugin.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Dalamud.Interface.Internal;
 using Dalamud.Plugin.Services;
@@ -60,6 +51,7 @@ namespace DisPlacePlugin
         public static ITargetManager TargetMgr { get; private set; }
 
         [PluginService] public static IGameNetwork GameNetwork { get; private set; }
+        [PluginService] public static IPluginLog Logger { get; private set; }
 
 
         // Texture dictionary for the housing item icons.
@@ -128,8 +120,7 @@ namespace DisPlacePlugin
             HousingData.Init(Data, this);
             Memory.Init(Scanner);
             LayoutManager = new SaveLayoutManager(this, ChatGui, Config);
-
-            PluginLog.Log("DisPlace Plugin v3.1.0-d initialized");
+            Logger.Info("DisPlace Plugin v3.1.0-d initialized");
         }
         public void Initialize()
         {
@@ -215,7 +206,7 @@ namespace DisPlacePlugin
         public unsafe void PlaceItems()
         {
 
-            if (!IsDecorMode() || !IsRotateMode() || ItemsToPlace.Count == 0)
+            if (!IsDecorMode() || ItemsToPlace.Count == 0)
             {
                 return;
             }
@@ -267,7 +258,7 @@ namespace DisPlacePlugin
         unsafe public static void SetItemPosition(HousingItem rowItem)
         {
 
-            if (!IsDecorMode() || !IsRotateMode())
+            if (!IsDecorMode())
 
             {
                 LogError("Unable to set position outside of Rotate Layout mode");
@@ -741,15 +732,15 @@ namespace DisPlacePlugin
         public static void Log(string message, string detail_message = "")
         {
             var msg = $"{message}";
-            PluginLog.Log(detail_message == "" ? msg : detail_message);
+            Logger.Info(detail_message == "" ? msg : detail_message);
             ChatGui.Print(msg);
         }
         public static void LogError(string message, string detail_message = "")
         {
             var msg = $"{message}";
-            PluginLog.LogError(msg);
+            Logger.Error(msg);
 
-            if (detail_message.Length > 0) PluginLog.LogError(detail_message);
+            if (detail_message.Length > 0) Logger.Error(detail_message);
 
             ChatGui.PrintError(msg);
         }

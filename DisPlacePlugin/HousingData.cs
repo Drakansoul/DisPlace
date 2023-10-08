@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dalamud.Data;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 using Lumina.Excel.GeneratedSheets;
+using static DisPlacePlugin.DisPlacePlugin;
 
 namespace DisPlacePlugin
 {
@@ -55,12 +54,12 @@ namespace DisPlacePlugin
             _furnitureDict = dataMgr.GetExcelSheet<HousingFurniture>().ToDictionary(row => row.RowId, row => row);
             _yardObjectDict = dataMgr.GetExcelSheet<HousingYardObject>().ToDictionary(row => row.RowId, row => row);
 
-            PluginLog.Log($"Loaded {_territoryToLandSetDict.Keys.Count} landset rows");
-            PluginLog.Log($"Loaded {_furnitureDict.Keys.Count} furniture");
-            PluginLog.Log($"Loaded {_yardObjectDict.Keys.Count} yard objects");
-            PluginLog.Log($"Loaded {_unitedDict.Keys.Count} united parts");
-            PluginLog.Log($"Loaded {_stainDict.Keys.Count} dyes");
-            PluginLog.Log($"Loaded {_itemDict.Keys.Count} items with AdditionalData");
+            Logger.Info($"Loaded {_territoryToLandSetDict.Keys.Count} landset rows");
+            Logger.Info($"Loaded {_furnitureDict.Keys.Count} furniture");
+            Logger.Info($"Loaded {_yardObjectDict.Keys.Count} yard objects");
+            Logger.Info($"Loaded {_unitedDict.Keys.Count} united parts");
+            Logger.Info($"Loaded {_stainDict.Keys.Count} dyes");
+            Logger.Info($"Loaded {_itemDict.Keys.Count} items with AdditionalData");
         }
 
         public static HousingData Instance { get; private set; }

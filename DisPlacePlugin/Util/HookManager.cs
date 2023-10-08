@@ -1,12 +1,10 @@
 ﻿using Dalamud.Game;
-using Dalamud.Hooking;
-using Dalamud.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
+using static DisPlacePlugin.DisPlacePlugin;
+
 
 namespace DisPlacePlugin
 {
@@ -45,7 +43,7 @@ namespace DisPlacePlugin
 
         public static HookWrapper<T> HookAddress<T>(IntPtr addr, T detour, bool enable = true, int addressOffset = 0) where T : Delegate
         {
-            PluginLog.Information($"Hooking {detour.Method.Name} at {addr.ToString("X")}");
+            Logger.Information($"Hooking {detour.Method.Name} at {addr.ToString("X")}");
             
             var h = InteropProvider.HookFromAddress(addr + addressOffset, detour);
             var wh = new HookWrapper<T>(h);

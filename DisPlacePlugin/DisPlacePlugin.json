@@ -1,17 +1,27 @@
 {
-  "Author": "Drakansoul",
-  "Name": "DisPlace Plugin",
-  "InternalName": "DisPlacePlugin",
-  "Description": "Automatically save & load interior and exterior house layouts. Copy other housing layouts. Import/export layouts from the MakePlace program.",
-  "RepoUrl": "https://github.com/Drakansoul/DisPlace",
-  "Tags": [
-    "makeplace",
-    "housing",
-    "furniture",
-    "jawslouis",
-    "drakansoul",
-    "displace"
-  ],
-  "IconUrl": "https://raw.githubusercontent.com/Drakansoul/DisPlace/master/icon.png",
-  "Punchline": "Automatically save & load furniture layouts in your house. Copy layouts from other houses."
+    "Author": "Drakansoul",
+    "Name": "DisPlace Plugin",
+    "InternalName": "DisPlacePlugin",
+    "AssemblyVersion": "3.1.0",
+    "Punchline": "Automatically save & load furniture layouts in ANY house.",
+    "Description": "Automatically save & load the positions of house furniture. Copy other housing layouts. Import/export layouts from the MakePlace program.",
+    "ApplicableVersion": "any",
+    "RepoUrl": "https://github.com/Drakansoul/DisPlace",
+    "Tags": [
+        "makeplace",
+        "housing",
+        "furniture",
+        "jawslouis",
+        "drakansoul",
+        "displace"
+    ],
+    "DalamudApiLevel": 9,
+    "LoadPriority": 0,
+    "IconUrl": "https://raw.githubusercontent.com/Drakansoul/DisPlace/master/icon.png",
+    "DownloadCount": -1337,
+    "DownloadLinkInstall": "https://github.com/Drakansoul/DisPlace/releases/download/v3.1.0-d-d/DisPlacePlugin.zip",
+    "DownloadLinkTesting": "https://github.com/Drakansoul/DisPlace/releases/download/v3.1.0-d/DisPlacePlugin.zip",
+    "DownloadLinkUpdate": "https://github.com/Drakansoul/DisPlace/releases/download/v3.1.0-d/DisPlacePlugin.zip",
+    "_isDip17Plugin": false,
+    "_Dip17Channel": null
 }

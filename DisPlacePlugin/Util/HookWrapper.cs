@@ -1,7 +1,7 @@
 ﻿using System;
 using Dalamud.Hooking;
-using Dalamud.Logging;
-using Dalamud.Plugin;
+using static DisPlacePlugin.DisPlacePlugin;
+
 
 namespace DisPlacePlugin
 {
@@ -41,7 +41,7 @@ namespace DisPlacePlugin
 
         public void Dispose()
         {
-            PluginLog.Information("Disposing of {cdelegate}", typeof(T).Name);
+            Logger.Information("Disposing of {cdelegate}", typeof(T).Name);
             Disable();
             disposed = true;
             wrappedHook?.Dispose();
