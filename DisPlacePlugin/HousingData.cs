@@ -2,6 +2,7 @@
 using System.Linq;
 using Dalamud.Data;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using Lumina.Excel.GeneratedSheets;
 
 namespace DisPlacePlugin
@@ -18,7 +19,7 @@ namespace DisPlacePlugin
 
         private static DisPlacePlugin Plugin;
 
-        private HousingData(DataManager dataMgr)
+        private HousingData(IDataManager dataMgr)
         {
 
             var sheet = dataMgr.GetExcelSheet<HousingLandSet>();
@@ -64,7 +65,7 @@ namespace DisPlacePlugin
 
         public static HousingData Instance { get; private set; }
 
-        public static void Init(DataManager dataMgr, DisPlacePlugin plugin)
+        public static void Init(IDataManager dataMgr, DisPlacePlugin plugin)
         {
             Plugin = plugin;
             Instance = new HousingData(dataMgr);

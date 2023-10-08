@@ -134,8 +134,7 @@ namespace DisPlacePlugin.Gui
                     {
                         try
                         {
-                            var iconTex = DisPlacePlugin.Data.GetIcon(icon);
-                            var tex = DisPlacePlugin.Interface.UiBuilder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width, iconTex.Header.Height, 4);
+                            var tex = DisPlacePlugin.TextureProvider.GetIcon(icon);
                             if (tex != null && tex.ImGuiHandle != IntPtr.Zero)
                                 Plugin.TextureDictionary[icon] = tex;
                         }

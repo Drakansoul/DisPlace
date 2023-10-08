@@ -16,6 +16,7 @@ using static DisPlacePlugin.DisPlacePlugin;
 using System.Drawing;
 using System.Globalization;
 using System.Text.Json.Serialization;
+using Dalamud.Plugin.Services;
 
 namespace DisPlacePlugin
 {
@@ -145,13 +146,13 @@ namespace DisPlacePlugin
 
     public class SaveLayoutManager
     {
-        public ChatGui chat;
+        public IChatGui chat;
         public static Configuration Config;
         public static DisPlacePlugin Plugin;
 
         public static List<(Color, uint)> ColorList;
 
-        public SaveLayoutManager(DisPlacePlugin plugin, ChatGui chatGui, Configuration config)
+        public SaveLayoutManager(DisPlacePlugin plugin, IChatGui chatGui, Configuration config)
         {
             chat = chatGui;
             Config = config;
