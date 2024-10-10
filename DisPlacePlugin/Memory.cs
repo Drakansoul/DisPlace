@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.MJI;
@@ -156,49 +157,34 @@ namespace DisPlacePlugin
 
             return ret;
         }
-
-        public unsafe List<HousingGameObject> GetExteriorPlacedObjects()
+        public unsafe bool GetExteriorPlacedObjects(out List<HousingGameObject> objects, Vector3 playerPos) 
+        /*
+        this misses interactable objects such as mailboxes and the cold knights cookfire.
+        I'll probably just leave it that way unless people really want the functionality since it's probably a hassle to actually track down where these items are stored.
+        Additionally, HouseMate also does not tag these kinds of items so I presume that adding it also wasn;t a priority for them either.
+        */
         {
+            objects = null;
+            if (HousingModule == null ||
+                HousingModule->GetCurrentManager() == null ||
+                HousingModule->GetCurrentManager()->Objects == null)
+                return false;
 
-            var mgr = Memory.Instance.HousingModule->outdoorTerritory;
-
-            var outdoorMgrAddr = (IntPtr)mgr;
-            var objectListAddr = outdoorMgrAddr + 0x10;
-            var activeObjList = objectListAddr + 0x8968;
-
-
-            var exteriorItems = Memory.GetContainer(InventoryType.HousingExteriorPlacedItems);
-
-            if (exteriorItems == null) throw new Exception("Unable to get inventory for exterior");
-
-            var placedObjects = new List<HousingGameObject>();
-
-            for (int i = 0; i < exteriorItems->Size; i++)
+            var tmpObjects = new List<(HousingGameObject gObject, float distance)>();
+            objects = new List<HousingGameObject>();
+            var curMgr = HousingModule->outdoorTerritory;
+            for (var i = 0; i < 400; i++)
             {
-                var item = exteriorItems->GetInventorySlot(i);
-                if (item == null || item->ItemId == 0) continue;
-
-                var itemInfoIndex = GetYardIndex(mgr->Plot, (byte)i);
-                var itemInfo = HousingObjectManager.GetItemInfo(mgr, itemInfoIndex);
-
-                if (itemInfo == null) continue;
-
-                var gameObj = (HousingGameObject*)GetObjectFromIndex(activeObjList, itemInfo->ObjectIndex);
-
-                if (gameObj == null)
-                {
-                    gameObj = (HousingGameObject*)GetGameObject(objectListAddr, itemInfoIndex);
-                }
-
-                if (gameObj != null)
-                {
-                    placedObjects.Add(*gameObj);
-                }
+                var oPtr = curMgr->Objects[i];
+                if (oPtr == 0)
+                    continue;
+                var o = *(HousingGameObject*) oPtr;
+                tmpObjects.Add((o, Utils.DistanceFromPlayer(o, playerPos)));
             }
 
-
-
-            return placedObjects;
+            tmpObjects.Sort((obj1, obj2) => obj1.distance.CompareTo(obj2.distance));
+            objects = tmpObjects.Select(obj => obj.gObject).ToList();
+            return true;
         }
 
         public unsafe bool TryGetIslandGameObjectList(out List<HousingGameObject> objects)
@@ -227,15 +213,12 @@ namespace DisPlacePlugin
                 return false;
 
             objects = new List<HousingGameObject>();
-
             for (var i = 0; i < 400; i++)
             {
                 var oPtr = HousingModule->GetCurrentManager()->Objects[i];
                 if (oPtr == 0)
                     continue;
-
                 var o = *(HousingGameObject*)oPtr;
-
                 objects.Add(o);
             }
 
@@ -245,9 +228,12 @@ namespace DisPlacePlugin
                     string name1 = "", name2 = "";
                     if (HousingData.Instance.TryGetFurniture(obj1.housingRowId, out var furniture1))
                         name1 = furniture1.Item.Value.Name.ToString();
-
+                    else if (HousingData.Instance.TryGetYardObject(obj1.housingRowId, out var yardObject1))
+                        name1 = yardObject1.Item.Value.Name.ToString();
                     if (HousingData.Instance.TryGetFurniture(obj2.housingRowId, out var furniture2))
                         name2 = furniture2.Item.Value.Name.ToString();
+                    else if (HousingData.Instance.TryGetYardObject(obj2.housingRowId, out var yardObject2))
+                        name2 = yardObject2.Item.Value.Name.ToString();
 
                     return string.Compare(name1, name2, StringComparison.Ordinal);
                 });
@@ -284,14 +270,15 @@ namespace DisPlacePlugin
             None
         }
 
-        public unsafe HousingArea GetCurrentTerritory()
+        public unsafe HousingArea GetCurrentTerritory() // this gets called every window draw for some reason, should probably looke to refactor to only call this when something needs to be changed or might have been updated.
         {
             var territoryRow = DalamudApi.DataManager.GetExcelSheet<TerritoryType>().GetRow(GetTerritoryTypeId());
-            if (territoryRow == null)
+            if (territoryRow == null || territoryRow.Name.ToString().Equals("r1i5")) // blacklist company workshop from editing since it's not actually a housing area
             {
                 LogError("Mem Cannot identify territory");
                 return HousingArea.None;
             }
+            //DalamudApi.PluginLog.Debug(territoryRow.Name.ToString());
 
             if (territoryRow.Name.ToString().Equals("h1m2"))
             {
