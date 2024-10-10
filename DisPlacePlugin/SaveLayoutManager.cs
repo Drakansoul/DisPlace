@@ -552,7 +552,6 @@ namespace DisPlacePlugin
             {
                 throw new Exception("Save file not specified");
             }
-
             Layout save = Plugin.Layout;
             save.playerTransform = new Transform();
 
@@ -570,11 +569,11 @@ namespace DisPlacePlugin
             {
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                 WriteIndented = true,
-                Converters = { new ObjectToInferredTypesConverter() }
+                Converters = { new ObjectToInferredTypesConverter() },
+                NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals //throwing this on here because it makes it easier to debug. This also allows for exporting incorrect values but whatever.
 
             };
             string jsonString = JsonSerializer.Serialize(save, options);
-
             string pattern = @"\s+(-?(?:[0-9]*[.])?[0-9]+(?:E-[0-9]+)?,?)\s*(?=\s[-\d\]])";
             string result = Regex.Replace(jsonString, pattern, " $1");
 
