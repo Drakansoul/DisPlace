@@ -11,6 +11,7 @@ using System.Numerics;
 using System.Threading;
 using static DisPlacePlugin.Memory;
 using HousingFurniture = Lumina.Excel.GeneratedSheets.HousingFurniture;
+using Lumina.Excel;
 
 namespace DisPlacePlugin
 {
@@ -29,9 +30,10 @@ namespace DisPlacePlugin
         // Function for selecting an item, usually used when clicking on one in game.        
         public delegate void SelectItemDelegate(IntPtr housingStruct, IntPtr item);
         private static HookWrapper<SelectItemDelegate> SelectItemHook;
+        
 
-        public delegate void PlaceItemDelegate(IntPtr housingStruct, IntPtr item);
-        private static HookWrapper<PlaceItemDelegate> PlaceItemHook;
+        public delegate void ClickItemDelegate(IntPtr housingStruct, IntPtr item);
+        private static HookWrapper<ClickItemDelegate> ClickItemHook;
 
         public static bool CurrentlyPlacingItems = false;
 
@@ -88,7 +90,7 @@ namespace DisPlacePlugin
             Memory.Instance.SetPlaceAnywhere(true);
             LayoutManager = new SaveLayoutManager(this, Config);
 
-            DalamudApi.PluginLog.Info("DisPlace Plugin v3.6.0 initialized");
+            DalamudApi.PluginLog.Info("DisPlace Plugin v3.7.0 initialized");
         }
         public void Initialize()
         {
@@ -97,7 +99,7 @@ namespace DisPlacePlugin
 
             SelectItemHook = HookManager.Hook<SelectItemDelegate>("48 85 D2 0F 84 49 09 00 00 53 41 56 48 83 EC 48 48 89 6C 24 60 48 8B DA 48 89 74 24 70 4C 8B F1", SelectItemDetour);
 
-            PlaceItemHook = HookManager.Hook<PlaceItemDelegate>("48 89 5C 24 10 48 89 74  24 18 57 48 83 EC 20 4c 8B 41 18 33 FF 0F B6 F2", PlaceItemDetour);
+            ClickItemHook = HookManager.Hook<ClickItemDelegate>("48 89 5C 24 10 48 89 74  24 18 57 48 83 EC 20 4c 8B 41 18 33 FF 0F B6 F2", ClickItemDetour);
 
             UpdateYardObjHook = HookManager.Hook<UpdateYardDelegate>("48 89 74 24 18 57 48 83 ec 20 b8 dc 02 00 00 0f b7 f2 ??", UpdateYardObj);
 
@@ -107,7 +109,14 @@ namespace DisPlacePlugin
 
             GetYardIndexHook = HookManager.Hook<GetIndexDelegate>("48 89 6c 24 18 56 48 83 ec 20 0f b6 ?? 0f b6 ?? ?? ?? ?? ?? ?? ?? ??", GetYardIndex);
 
+            MaybePlaceh = HookManager.Hook<MaybePlaced>("40 55 56 57 48 8D AC 24 70 FF FF FF 48 81 EC 90", MaybePlace); // MaybePlace0
+            ResetItemPlacementh = HookManager.Hook<ResetItemPlacementd>("48 89 5C 24 08 57 48 83  EC 20 48 83 79 18 00 0F", Hc1); // reset item to previous position on failed placement
+            FinalizeHousingh = HookManager.Hook<FinalizeHousingd>("40 55 56 41 56 48 83 EC 20 48 63 EA 48 8B F1 8B", FinalizeHousing); // finalize housing placement on interface close
+            PlaceCallh = HookManager.Hook<PlaceCalld>("40 53 48 83 Ec 20 48 8B 51 18 48 8B D9 48 85 D2 0F 84 B1 00 00 00", PlaceCall); // branch b place
+
         }
+
+        
 
         internal delegate ushort GetIndexDelegate(byte type, byte objStruct);
         internal static HookWrapper<GetIndexDelegate> GetYardIndexHook;
@@ -155,7 +164,56 @@ namespace DisPlacePlugin
             SelectItemDetour((IntPtr)Memory.Instance.HousingStructure, item);
         }
 
-        unsafe static public void PlaceItemDetour(IntPtr housing, IntPtr item)
+
+        internal delegate void MaybePlaced(IntPtr housingPtr,IntPtr itemPtr, Int64 a); // @@@@@
+        internal static HookWrapper<MaybePlaced> MaybePlaceh;
+        unsafe static public void MaybePlacedt(IntPtr housingPtr,IntPtr itemPtr, Int64 a)
+        {
+            DalamudApi.PluginLog.Verbose(string.Format("maybe place {0} {1} {2}",(housingPtr+24).ToString(),itemPtr.ToString(),a.ToString()));
+            MaybePlaceh.Original(housingPtr,itemPtr,a);
+        }
+        unsafe static public void MaybePlace(IntPtr housingPtr,IntPtr itemPtr, Int64 a) // ####
+        {
+            MaybePlacedt(housingPtr,itemPtr,a);
+        }
+
+        internal delegate void ResetItemPlacementd(IntPtr housingPtr,Int64 a); // @@@@@
+        internal static HookWrapper<ResetItemPlacementd> ResetItemPlacementh;
+        unsafe static public void ResetItemPlacementdt(IntPtr housingPtr, Int64 a)
+        {
+            DalamudApi.PluginLog.Debug(string.Format("Return item to previous location if placemnt is canceled {0}",housingPtr+24.ToString()));
+            ResetItemPlacementh.Original(housingPtr,a);
+        }
+        unsafe static public void Hc1(IntPtr housingPtr,Int64 a) // ####
+        {
+            ResetItemPlacementdt(housingPtr,a);
+        }
+        
+        internal delegate void FinalizeHousingd(IntPtr housingPtr,Int64 a,IntPtr b); // @@@@@
+        internal static HookWrapper<FinalizeHousingd> FinalizeHousingh;
+        unsafe static public void FinalizeHousingdt(IntPtr housingPtr, Int64 a, IntPtr b)
+        {
+            DalamudApi.PluginLog.Verbose(string.Format("Finalize housing {0} {1} {2}",(housingPtr+24).ToString(),a.ToString(),b.ToString()));
+            FinalizeHousingh.Original(housingPtr,a,b);
+        }
+        unsafe static public void FinalizeHousing(IntPtr housingPtr,Int64 a,IntPtr b) // ####
+        {
+            FinalizeHousingdt(housingPtr,a,b);
+        }
+        
+        internal delegate void PlaceCalld(IntPtr housingPtr,Int64 a,IntPtr b); // @@@@@
+        internal static HookWrapper<PlaceCalld> PlaceCallh;
+        unsafe static public void PlaceCalldt(IntPtr housingPtr, Int64 a, IntPtr b)
+        {
+            DalamudApi.PluginLog.Verbose(string.Format("placeCall item {0} {1} {2}",(housingPtr+24).ToString(),a.ToString(),b.ToString()));
+            PlaceCallh.Original(housingPtr,a,b);
+        }
+        unsafe static public void PlaceCall(IntPtr housingPtr,Int64 a,IntPtr b) // ####
+        {
+            PlaceCalldt(housingPtr,a,b);
+        }
+
+        unsafe static public void ClickItemDetour(IntPtr housing, IntPtr item)
         {
             /*
             The call made by the XIV client has some strange behaviour.
@@ -163,14 +221,14 @@ namespace DisPlacePlugin
             I tried passing the active item but I believe that doing so led to more crashes.
             As such I've just defaulted to the easier path of just passing in a zero pointer so that the call populates itself form the housing object.
             */
-            DalamudApi.PluginLog.Debug(string.Format("placing item {0}",(housing+24).ToString()));
-            PlaceItemHook.Original(housing, item);
+            DalamudApi.PluginLog.Verbose(string.Format("attempting to place item {0}",(housing+24).ToString()));
+            ClickItemHook.Original(housing, item);
         }
 
 
-        unsafe static public void PlaceItem(IntPtr item)
+        unsafe static public void ClickItem(IntPtr item)
         {
-            PlaceItemDetour((IntPtr)Memory.Instance.HousingStructure, item);
+            ClickItemDetour((IntPtr)Memory.Instance.HousingStructure, item);
         }
         
 
@@ -266,7 +324,7 @@ namespace DisPlacePlugin
             MemInstance.WritePosition(position);
             MemInstance.WriteRotation(rotation);
 
-            PlaceItem(nint.Zero);
+            ClickItem(nint.Zero);
 
             rowItem.CorrectLocation = true;
             rowItem.CorrectRotation = true;
@@ -277,7 +335,7 @@ namespace DisPlacePlugin
         {
             if (CurrentlyPlacingItems)
             {
-                Log($"Already placing items");
+                LogError($"Already placing items");
                 return;
             }
 
@@ -371,7 +429,8 @@ namespace DisPlacePlugin
 
                 case HousingArea.Outdoors:
                     GetPlotLocation();
-                    allObjects = Mem.GetExteriorPlacedObjects();
+                    //Mem.GetExteriorPlacedObjects(out allObjects);
+                    Mem.TryGetNameSortedHousingGameObjectList(out allObjects);
                     ExteriorItemList.ForEach(item =>
                     {
                         item.ItemStruct = IntPtr.Zero;
@@ -504,9 +563,22 @@ namespace DisPlacePlugin
         public unsafe void GetPlotLocation()
         {
             var mgr = Memory.Instance.HousingModule->outdoorTerritory;
+            var plotNumber = mgr->Plot + 1;
+            if (plotNumber == 256) {
+                LogError("Not inside a valid Plot");
+                PlotLocation = new Location();
+                return;
+            } else {
+                
+            DalamudApi.PluginLog.Debug($"Housing plot: {plotNumber}");
+            }
             var territoryId = Memory.Instance.GetTerritoryTypeId();
-            var row = DalamudApi.DataManager.GetExcelSheet<TerritoryType>().GetRow(territoryId);
-
+            TerritoryType row = null;
+            try {
+                row = DalamudApi.DataManager.GetExcelSheet<TerritoryType>().GetRow(territoryId);
+            } catch (Exception e) {
+                LogError($"Error: {e.Message}", e.StackTrace);
+            }
             if (row == null)
             {
                 LogError("Plugin Cannot identify territory");
@@ -514,103 +586,78 @@ namespace DisPlacePlugin
             }
 
             var placeName = row.Name.ToString();
-
-            PlotLocation = Plots.Map[placeName][mgr->Plot + 1];
+            
+            DalamudApi.PluginLog.Info($"Loading Plot Number: {plotNumber}");
+            PlotLocation = Plots.Map[placeName][plotNumber];
         }
 
 
         public unsafe void LoadExterior()
         {
-
             SaveLayoutManager.LoadExteriorFixtures();
 
+            List<HousingGameObject> objects;
+            var playerPos = DalamudApi.ClientState.LocalPlayer.Position;
+            Memory.Instance.GetExteriorPlacedObjects(out objects, playerPos);
             ExteriorItemList.Clear();
-
-            var mgr = Memory.Instance.HousingModule->outdoorTerritory;
-
-            var outdoorMgrAddr = (IntPtr)mgr;
-            var objectListAddr = outdoorMgrAddr + 0x10;
-            var activeObjList = objectListAddr + 0x8968;
-
-            var exteriorItems = Memory.GetContainer(InventoryType.HousingExteriorPlacedItems);
-
             GetPlotLocation();
+            DalamudApi.PluginLog.Info($"Plot size: {PlotLocation.size}");
+            DalamudApi.PluginLog.Info($"Plot x: {PlotLocation.x}");
+            DalamudApi.PluginLog.Info($"Plot y: {PlotLocation.y}");
+            DalamudApi.PluginLog.Info($"Plot z: {PlotLocation.z}");
+            DalamudApi.PluginLog.Info($"Plot rot: {PlotLocation.rotation}");
+            DalamudApi.PluginLog.Info($"Plot enter: {PlotLocation.entranceLayout}");
+            
+            DalamudApi.PluginLog.Debug($"Player location within Plot: ({playerPos.X-PlotLocation.x},{playerPos.Y-PlotLocation.y},{playerPos.Z-PlotLocation.z})");
 
-            var rotateVector = Quaternion.CreateFromAxisAngle(Vector3.UnitY, PlotLocation.rotation);
-
-            switch (PlotLocation.size)
+            foreach (var gameObject in objects)
             {
-                case "s":
-                    Layout.houseSize = "Small";
+                uint furnitureKey = gameObject.housingRowId;
+                var furniture = DalamudApi.DataManager.GetExcelSheet<HousingYardObject>().GetRow(furnitureKey);
+                Item item = furniture?.Item?.Value;
+                if (item == null) continue;
+                if (item.RowId == 0) continue;
+
+                // I could probably do this better if I was fully rested and wanted to do vector math properly but I'm just going to do it the easy way. Drakansoul is very tired.
+                var xMax = 0;
+                var yMax = 7;
+                var zMax = 0;
+                switch (PlotLocation.size){ 
+                    case "l":
+                    xMax = 29;
+                    zMax = 29;
                     break;
-                case "m":
-                    Layout.houseSize = "Medium";
+                    case "m":
+                    xMax = 16;
+                    zMax = 16;
                     break;
-                case "l":
-                    Layout.houseSize = "Large";
+                    case "s":
+                    xMax = 12;
+                    zMax = 12;
                     break;
-
-            }
-
-            Layout.exteriorScale = 1;
-            Layout.properties["entranceLayout"] = PlotLocation.entranceLayout;
-
-            for (int i = 0; i < exteriorItems->Size; i++)
-            {
-                var item = exteriorItems->GetInventorySlot(i);
-                if (item == null || item->ItemId == 0) continue;
-
-                var itemRow = DalamudApi.DataManager.GetExcelSheet<Item>().GetRow(item->ItemId);
-                if (itemRow == null) continue;
-
-                var itemInfoIndex = GetYardIndex(mgr->Plot, (byte)i);
-
-                var itemInfo = HousingObjectManager.GetItemInfo(mgr, itemInfoIndex);
-                if (itemInfo == null)
-                {
-                    continue;
+                    default:
+                    yMax = 0;
+                    break;
                 }
 
-                var location = new Vector3(itemInfo->X, itemInfo->Y, itemInfo->Z);
 
+                var housingItem = new HousingItem(item, gameObject);
+                housingItem.ItemStruct = (IntPtr)gameObject.Item;
+                
+                var location = new Vector3(housingItem.X, housingItem.Y, housingItem.Z);
+                var rotateVector = Quaternion.CreateFromAxisAngle(Vector3.UnitY, PlotLocation.rotation);
                 var newLocation = Vector3.Transform(location - PlotLocation.ToVector(), rotateVector);
 
-                var housingItem = new HousingItem(
-                    itemRow,
-                    item->Stains[0],
-                    newLocation.X,
-                    newLocation.Y,
-                    newLocation.Z,
-                    itemInfo->Rotation + PlotLocation.rotation
-                );
+                housingItem.X = newLocation.X;
+                housingItem.Y = newLocation.Y;
+                housingItem.Z = newLocation.Z;
+                housingItem.Rotate += PlotLocation.rotation;
 
-
-                var gameObj = (HousingGameObject*)GetObjectFromIndex(activeObjList, itemInfo->ObjectIndex);
-
-                if (gameObj == null)
-                {
-                    gameObj = (HousingGameObject*)GetGameObject(objectListAddr, itemInfoIndex);
-
-                    if (gameObj != null)
-                    {
-
-                        location = new Vector3(gameObj->X, gameObj->Y, gameObj->Z);
-
-                        newLocation = Vector3.Transform(location - PlotLocation.ToVector(), rotateVector);
-
-
-                        housingItem.X = newLocation.X;
-                        housingItem.Y = newLocation.Y;
-                        housingItem.Z = newLocation.Z;
-                    }
+                if (!(Math.Abs(housingItem.X) > xMax|| Math.Abs(housingItem.Y) > yMax|| Math.Abs(housingItem.Z) > zMax)) { 
+                    ExteriorItemList.Add(housingItem);
+                } else {
+                    DalamudApi.PluginLog.Verbose($"Discarding item: {housingItem.Name} at ({housingItem.X},{housingItem.Y},{housingItem.Z})");
                 }
-
-                if (gameObj != null)
-                {
-                    housingItem.ItemStruct = (IntPtr)gameObj->Item;
-                }
-
-                ExteriorItemList.Add(housingItem);
             }
 
             Config.Save();
@@ -699,9 +746,9 @@ namespace DisPlacePlugin
 
         public void GetGameLayout()
         {
-
             Memory Mem = Memory.Instance;
             var currentTerritory = Mem.GetCurrentTerritory();
+            DalamudApi.PluginLog.Debug($"Ter ID: {currentTerritory}");
 
             var itemList = currentTerritory == HousingArea.Indoors ? InteriorItemList : ExteriorItemList;
             itemList.Clear();

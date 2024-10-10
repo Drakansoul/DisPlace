@@ -1,0 +1,4 @@
+- [ ] Add Teamcraft export support
+- [ ] Update windows to use proper classes
+- [ ] Refactor structure
+- [ ] Reverse engineer the more of the housing code
