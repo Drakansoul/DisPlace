@@ -54,6 +54,13 @@ namespace DisPlacePlugin
         {
 
             HookManager.Dispose();
+            try {
+                Memory.Instance.SetPlaceAnywhere(false);
+            }
+            catch (Exception ex)
+            {
+                DalamudApi.PluginLog.Error(ex, "Error while calling PluginMemory.Dispose()");
+            }
 
             DalamudApi.ClientState.TerritoryChanged -= TerritoryChanged;
             DalamudApi.CommandManager.RemoveHandler("/displace");
@@ -80,6 +87,7 @@ namespace DisPlacePlugin
 
             HousingData.Init(this);
             Memory.Init();
+            Memory.Instance.SetPlaceAnywhere(true);
             LayoutManager = new SaveLayoutManager(this, Config);
 
             DalamudApi.PluginLog.Info("DisPlace Plugin v3.7.0 initialized");
