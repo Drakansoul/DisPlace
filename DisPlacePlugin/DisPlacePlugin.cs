@@ -607,8 +607,11 @@ namespace DisPlacePlugin
             DalamudApi.PluginLog.Info($"Plot z: {PlotLocation.z}");
             DalamudApi.PluginLog.Info($"Plot rot: {PlotLocation.rotation}");
             DalamudApi.PluginLog.Info($"Plot enter: {PlotLocation.entranceLayout}");
-            
-            DalamudApi.PluginLog.Debug($"Player location within Plot: ({playerPos.X-PlotLocation.x},{playerPos.Y-PlotLocation.y},{playerPos.Z-PlotLocation.z})");
+
+            var rotateVector = Quaternion.CreateFromAxisAngle(Vector3.UnitY, PlotLocation.rotation);
+            var correctedPlayerPos = Vector3.Transform(playerPos - PlotLocation.ToVector(), rotateVector);
+
+            DalamudApi.PluginLog.Debug($"Player location within Plot: ({correctedPlayerPos.X},{correctedPlayerPos.Y},{correctedPlayerPos.Z})");
 
             foreach (var gameObject in objects)
             {
@@ -619,21 +622,21 @@ namespace DisPlacePlugin
                 if (item.RowId == 0) continue;
 
                 // I could probably do this better if I was fully rested and wanted to do vector math properly but I'm just going to do it the easy way. Drakansoul is very tired.
-                var xMax = 0;
-                var yMax = 7;
-                var zMax = 0;
+                var xMax = 0.0;
+                var yMax = 7.0;
+                var zMax = 0.0;
                 switch (PlotLocation.size){ 
                     case "l":
-                    xMax = 29;
-                    zMax = 29;
+                    xMax = 20.2;
+                    zMax = 24.2;
                     break;
                     case "m":
-                    xMax = 16;
-                    zMax = 16;
+                    xMax = 16.5;
+                    zMax = 16.5;
                     break;
                     case "s":
-                    xMax = 12;
-                    zMax = 12;
+                    xMax = 12.3;
+                    zMax = 12.3;
                     break;
                     default:
                     yMax = 0;
@@ -645,7 +648,6 @@ namespace DisPlacePlugin
                 housingItem.ItemStruct = (IntPtr)gameObject.Item;
                 
                 var location = new Vector3(housingItem.X, housingItem.Y, housingItem.Z);
-                var rotateVector = Quaternion.CreateFromAxisAngle(Vector3.UnitY, PlotLocation.rotation);
                 var newLocation = Vector3.Transform(location - PlotLocation.ToVector(), rotateVector);
 
                 housingItem.X = newLocation.X;
