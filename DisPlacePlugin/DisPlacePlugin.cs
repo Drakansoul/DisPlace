@@ -90,7 +90,7 @@ namespace DisPlacePlugin
             Memory.Instance.SetPlaceAnywhere(true);
             LayoutManager = new SaveLayoutManager(this, Config);
 
-            DalamudApi.PluginLog.Info("DisPlace Plugin v3.7.1 initialized");
+            DalamudApi.PluginLog.Info("DisPlace Plugin v3.7.2 initialized");
         }
         public void Initialize()
         {
@@ -639,8 +639,8 @@ namespace DisPlacePlugin
                     zMax = 16.5;
                     break;
                     case "s":
-                    xMax = 12.3;
-                    zMax = 12.3;
+                    xMax = 12.5;
+                    zMax = 12.5;
                     break;
                     default:
                     yMax = 0;
