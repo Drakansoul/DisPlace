@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.Gui;
-using Dalamud.Logging;
-using Lumina.Excel.GeneratedSheets;
+﻿using Lumina.Excel.Sheets;
 using DisPlacePlugin.Objects;
 using System;
 using System.Collections.Generic;
@@ -16,9 +14,8 @@ using static DisPlacePlugin.DisPlacePlugin;
 using System.Drawing;
 using System.Globalization;
 using System.Text.Json.Serialization;
-using ImGuiNET;
 using FFXIVClientStructs.FFXIV.Client.Game.MJI;
-using System.Xml.Linq;
+using Lumina.Extensions;
 
 namespace DisPlacePlugin
 {
@@ -217,17 +214,17 @@ namespace DisPlacePlugin
         static HousingItem ConvertToHousingItem(Furniture furniture)
         {
             var ItemSheet = DalamudApi.DataManager.GetExcelSheet<Item>();
-            var itemRow = ItemSheet.FirstOrDefault(row => row.Name.ToString().Equals(furniture.name));
+            var itemRow = ItemSheet.FirstOrNull(row => row.Name.ToString().Equals(furniture.name));
 
-            if (itemRow == null) itemRow = ItemSheet.FirstOrDefault(row => row.RowId == furniture.itemId);
+            if (itemRow.Equals(null)) itemRow = ItemSheet.FirstOrDefault(row => row.RowId == furniture.itemId);
 
-            if (itemRow == null) return null;
+            if (itemRow.Equals(null)) return null;
 
             var r = furniture.transform.rotation;
             var quat = new Quaternion(r[0], r[1], r[2], r[3]);
 
             var houseItem = new HousingItem(
-                itemRow,
+                itemRow.Value,
                 (byte)furniture.GetClosestStain(ColorList),
                 descale(furniture.transform.location[0]),
                 descale(furniture.transform.location[2]), // switch Y & Z axis
@@ -286,7 +283,7 @@ namespace DisPlacePlugin
 
             foreach (var stain in StainList)
             {
-                if (stain.Unknown6) // bool for whether the dye can be used for housing
+                if (stain.Unknown2) // bool for whether the dye can be used for housing
                 {
                     ColorList.Add((Color.FromArgb((int)stain.Color), stain.RowId));
                 }
@@ -322,8 +319,8 @@ namespace DisPlacePlugin
             {
                 var fixture = new Fixture();
                 fixture.type = Utils.GetExteriorPartDescriptor(ExteriorPartsType.Walls);
-                fixture.name = roofItem.Name.ToString();
-                fixture.itemId = roofItem.RowId;
+                fixture.name = roofItem.Value.Name.ToString();
+                fixture.itemId = roofItem.Value.RowId;
                 exterior.Add(fixture);
 
             }
@@ -337,8 +334,8 @@ namespace DisPlacePlugin
 
                     var fixture = new Fixture();
                     fixture.type = Utils.GetExteriorPartDescriptor(type);
-                    fixture.name = item.Name.ToString();
-                    fixture.itemId = item.RowId;
+                    fixture.name = item.Value.Name.ToString();
+                    fixture.itemId = item.Value.RowId;
                     exterior.Add(fixture);
 
                 }
@@ -399,7 +396,7 @@ namespace DisPlacePlugin
                 }
             }
 
-            var BuildingSheet = DalamudApi.DataManager.GetExcelSheet<MJIBuilding>();
+            var BuildingSheet = DalamudApi.DataManager.GetSubrowExcelSheet<MJIBuilding>();
 
             var workshop = state.Workshops;
             for (int i = 0; i < 4; i++)
@@ -408,7 +405,7 @@ namespace DisPlacePlugin
 
                 var fixture = new Fixture("Facility");
                 fixture.level = "Facility " + ToRoman(workshop.PlaceId[i]);
-                fixture.name = BuildingSheet.GetRow(1, workshop.GlamourLevel[i])?.Name.Value.Text.ToString();
+                fixture.name = BuildingSheet.GetSubrowOrDefault(1, workshop.GlamourLevel[i])?.Name.Value.Text.ToString();
                 exterior.Add(fixture);
             }
 
@@ -418,7 +415,7 @@ namespace DisPlacePlugin
                 if (granary.PlaceId[i] == 0) continue;
                 var fixture = new Fixture("Facility");
                 fixture.level = "Facility " + ToRoman(granary.PlaceId[i]);
-                fixture.name = BuildingSheet.GetRow(2, fixture.itemId)?.Name.Value.Text.ToString();
+                fixture.name = BuildingSheet.GetSubrowOrDefault(2, granary.BuildingLevel[i])?.Name.Value.Text.ToString();
                 exterior.Add(fixture);
             }
 
@@ -430,7 +427,7 @@ namespace DisPlacePlugin
 
                 var fixture = new Fixture("Landmark");
                 fixture.level = "Landmark " + ToRoman((byte)(i + 1));
-                fixture.name = LandmarkSheet.GetRow(id)?.Name.Value.Text.ToString();
+                fixture.name = LandmarkSheet.GetRowOrDefault(id)?.Name.Value.Text.ToString();
                 exterior.Add(fixture);
             }
         }
@@ -453,8 +450,8 @@ namespace DisPlacePlugin
                     var fixture = new Fixture();
                     fixture.type = Utils.GetInteriorPartDescriptor((InteriorPartsType)j);
                     fixture.level = Utils.GetFloorDescriptor((InteriorFloor)i);
-                    fixture.name = fixtures[j].Item.Name.ToString();
-                    fixture.itemId = fixtures[j].Item.RowId;
+                    fixture.name = fixtures[j].Item.Value.Name.ToString();
+                    fixture.itemId = fixtures[j].Item.Value.RowId;
 
                     layout.interiorFixture.Add(fixture);
                 }
@@ -465,7 +462,7 @@ namespace DisPlacePlugin
             var territoryId = Memory.Instance.GetTerritoryTypeId();
             var row = DalamudApi.DataManager.GetExcelSheet<TerritoryType>().GetRow(territoryId);
 
-            if (row != null)
+            if (row.Equals(null))
             {
                 var placeName = row.Name.ToString();
 
@@ -528,7 +525,7 @@ namespace DisPlacePlugin
                 else if (gameObject.MaterialItemKey != 0)
                 {
                     var item = DalamudApi.DataManager.GetExcelSheet<Item>().GetRow(gameObject.MaterialItemKey);
-                    if (item != null)
+                    if (!item.Equals(null))
                     {
                         var basicItem = new BasicItem();
                         basicItem.name = item.Name.ToString();

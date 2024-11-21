@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dalamud.Data;
-using Dalamud.Logging;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace DisPlacePlugin
 {
     public class HousingData
     {
         private readonly Dictionary<uint, HousingFurniture> _furnitureDict;
-        private readonly Dictionary<uint, Item> _itemDict;
+        private readonly Dictionary<uint, Item?> _itemDict;
         private readonly Dictionary<uint, Stain> _stainDict;
 
         private readonly Dictionary<uint, Dictionary<uint, CommonLandSet>> _territoryToLandSetDict;
@@ -33,14 +31,14 @@ namespace DisPlacePlugin
 
             _territoryToLandSetDict = new Dictionary<uint, Dictionary<uint, CommonLandSet>>();
 
-            for (uint i = 0; i < sheet.RowCount && i < terriKeys.Length; i++)
+            for (uint i = 0; i < sheet.Count && i < terriKeys.Length; i++)
             {
 
                 var row = sheet.GetRow(i);
                 var rowDict = new Dictionary<uint, CommonLandSet>();
-                for (var j = 0; j < row.LandSets.Length; j++)
+                for (var j = 0; j < row.LandSet.Count; j++)
                 {
-                    var cset = CommonLandSet.FromExd(row.LandSets[j], j);
+                    var cset = CommonLandSet.FromExd(row.LandSet[j], j);
                     rowDict[cset.PlacardId] = cset;
                 }
 
@@ -50,12 +48,20 @@ namespace DisPlacePlugin
             var unitedExteriorSheet = DalamudApi.DataManager.GetExcelSheet<HousingUnitedExterior>();
             _unitedDict = new Dictionary<uint, uint>();
             foreach (var row in unitedExteriorSheet)
-                foreach (var item in row.Item)
-                    _unitedDict[item.Row] = row.RowId;
+            {
+                _unitedDict[row.Roof.RowId] = row.RowId;
+                _unitedDict[row.Walls.RowId] = row.RowId;
+                _unitedDict[row.Windows.RowId] = row.RowId;
+                _unitedDict[row.Door.RowId] = row.RowId;
+                _unitedDict[row.OptionalRoof.RowId] = row.RowId;
+                _unitedDict[row.OptionalWall.RowId] = row.RowId;
+                _unitedDict[row.OptionalSignboard.RowId] = row.RowId;
+                _unitedDict[row.Fence.RowId] = row.RowId;
+            }
 
             _itemDict = DalamudApi.DataManager.GetExcelSheet<Item>()
-                .Where(item => item.AdditionalData != 0 && (item.ItemSearchCategory.Row == 65 || item.ItemSearchCategory.Row == 66))
-                .ToDictionary(row => row.AdditionalData, row => row);
+                .Where(item => item.AdditionalData.RowId != 0 && (item.ItemSearchCategory.RowId == 65 || item.ItemSearchCategory.RowId == 66))
+                .ToDictionary(row => row.AdditionalData.RowId, row => (Item?) row);
 
             _stainDict = DalamudApi.DataManager.GetExcelSheet<Stain>().ToDictionary(row => row.RowId, row => row);
             _furnitureDict = DalamudApi.DataManager.GetExcelSheet<HousingFurniture>().ToDictionary(row => row.RowId, row => row);
@@ -82,12 +88,12 @@ namespace DisPlacePlugin
                 var id = row.RowId;
 
                 if (id < 1000) continue;
-                else if (id > 1000 && id < 2000) _painting.TryAdd(row.Unknown0, row.Item.Row);
-                else if (id > 2000 && id < 3000) _wallpaper.TryAdd(row.Unknown0, row.Item.Row);
-                else if (id > 3000 && id < 4000) _smallFishprint.TryAdd(row.Unknown0, row.Item.Row);
-                else if (id > 4000 && id < 5000) _mediumFishprint.TryAdd(row.Unknown0, row.Item.Row);
-                else if (id > 5000 && id < 6000) _largeFishprint.TryAdd(row.Unknown0, row.Item.Row);
-                else if (id > 6000 && id < 7000) _extraLargeFishprint.TryAdd(row.Unknown0, row.Item.Row);
+                else if (id > 1000 && id < 2000) _painting.TryAdd(row.Unknown0, row.Item.RowId);
+                else if (id > 2000 && id < 3000) _wallpaper.TryAdd(row.Unknown0, row.Item.RowId);
+                else if (id > 3000 && id < 4000) _smallFishprint.TryAdd(row.Unknown0, row.Item.RowId);
+                else if (id > 4000 && id < 5000) _mediumFishprint.TryAdd(row.Unknown0, row.Item.RowId);
+                else if (id > 5000 && id < 6000) _largeFishprint.TryAdd(row.Unknown0, row.Item.RowId);
+                else if (id > 6000 && id < 7000) _extraLargeFishprint.TryAdd(row.Unknown0, row.Item.RowId);
 
             }
         }
@@ -110,7 +116,7 @@ namespace DisPlacePlugin
             return _furnitureDict.TryGetValue(id, out furniture);
         }
 
-        public bool IsUnitedExteriorPart(uint id, out Item item)
+        public bool IsUnitedExteriorPart(uint id, out Item? item)
         {
             item = null;
             if (!_unitedDict.TryGetValue(id, out var unitedId))
@@ -126,7 +132,7 @@ namespace DisPlacePlugin
             return _territoryToLandSetDict.TryGetValue(id, out dict);
         }
 
-        public bool TryGetItem(uint id, out Item item)
+        public bool TryGetItem(uint id, out Item? item)
         {
             return _itemDict.TryGetValue(id, out item);
         }

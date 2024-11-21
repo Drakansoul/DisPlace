@@ -1,7 +1,6 @@
 ﻿using Dalamud.Game.Command;
 using Dalamud.Plugin;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using DisPlacePlugin.Objects;
 using DisPlacePlugin.Util;
 using System;
@@ -10,8 +9,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using static DisPlacePlugin.Memory;
-using HousingFurniture = Lumina.Excel.GeneratedSheets.HousingFurniture;
-using Lumina.Excel;
+using HousingFurniture = Lumina.Excel.Sheets.HousingFurniture;
 
 namespace DisPlacePlugin
 {
@@ -90,7 +88,7 @@ namespace DisPlacePlugin
             Memory.Instance.SetPlaceAnywhere(true);
             LayoutManager = new SaveLayoutManager(this, Config);
 
-            DalamudApi.PluginLog.Info("DisPlace Plugin v3.7.2 initialized");
+            DalamudApi.PluginLog.Info("DisPlace Plugin v3.7.3 initialized");
         }
         public void Initialize()
         {
@@ -107,7 +105,7 @@ namespace DisPlacePlugin
 
             GetObjectFromIndexHook = HookManager.Hook<GetActiveObjectDelegate>("81 fa 90 01 00 00 75 08 48 8b 81 88 0c 00 00 c3 0f b7 81 90 0c 00 00 3b d0 72 03 33 c0 c3", GetObjectFromIndex);
 
-            GetYardIndexHook = HookManager.Hook<GetIndexDelegate>("48 89 6c 24 18 56 48 83 ec 20 0f b6 ?? 0f b6 ?? ?? ?? ?? ?? ?? ?? ??", GetYardIndex);
+            GetYardIndexHook = HookManager.Hook<GetIndexDelegate>("48 89 5C 24 ?? ?? 48 83 ec 20 0f b6 ?? 0f b6 ?? 84 ??", GetYardIndex);
 
             MaybePlaceh = HookManager.Hook<MaybePlaced>("40 55 56 57 48 8D AC 24 70 FF FF FF 48 81 EC 90", MaybePlace); // MaybePlace0
             ResetItemPlacementh = HookManager.Hook<ResetItemPlacementd>("48 89 5C 24 08 57 48 83  EC 20 48 83 79 18 00 0F", Hc1); // reset item to previous position on failed placement
@@ -573,13 +571,8 @@ namespace DisPlacePlugin
             DalamudApi.PluginLog.Debug($"Housing plot: {plotNumber}");
             }
             var territoryId = Memory.Instance.GetTerritoryTypeId();
-            TerritoryType row = null;
-            try {
-                row = DalamudApi.DataManager.GetExcelSheet<TerritoryType>().GetRow(territoryId);
-            } catch (Exception e) {
-                LogError($"Error: {e.Message}", e.StackTrace);
-            }
-            if (row == null)
+            TerritoryType row = DalamudApi.DataManager.GetExcelSheet<TerritoryType>().GetRow(territoryId);
+            if (row.Equals(null))
             {
                 LogError("Plugin Cannot identify territory");
                 return;
@@ -617,9 +610,9 @@ namespace DisPlacePlugin
             {
                 uint furnitureKey = gameObject.housingRowId;
                 var furniture = DalamudApi.DataManager.GetExcelSheet<HousingYardObject>().GetRow(furnitureKey);
-                Item item = furniture?.Item?.Value;
+                Item? item = furniture.Item.Value;
                 if (item == null) continue;
-                if (item.RowId == 0) continue;
+                if (item.Equals(0)) continue;
 
                 /* 
                 I could probably do this better if I was fully rested and wanted to do vector math properly but I'm just going to do it the easy way. Drakansoul is very tired.
@@ -648,7 +641,7 @@ namespace DisPlacePlugin
                 }
 
 
-                var housingItem = new HousingItem(item, gameObject);
+                var housingItem = new HousingItem(item.Value, gameObject);
                 housingItem.ItemStruct = (IntPtr)gameObject.Item;
                 
                 var location = new Vector3(housingItem.X, housingItem.Y, housingItem.Z);
@@ -700,9 +693,9 @@ namespace DisPlacePlugin
                 uint furnitureKey = gameObject.housingRowId;
 
                 var furniture = DalamudApi.DataManager.GetExcelSheet<HousingFurniture>().GetRow(furnitureKey);
-                Item item = furniture?.Item?.Value;
+                Item item = furniture.Item.Value;
 
-                if (item == null) continue;
+                if (item.Equals(null)) continue;
                 if (item.RowId == 0) continue;
 
                 if (!IsSelectedFloor(gameObject.Y)) continue;
@@ -736,9 +729,9 @@ namespace DisPlacePlugin
             {
                 uint furnitureKey = gameObject.housingRowId;
                 var furniture = DalamudApi.DataManager.GetExcelSheet<HousingYardObject>().GetRow(furnitureKey);
-                Item item = furniture?.Item?.Value;
+                Item item = furniture.Item.Value;
 
-                if (item == null) continue;
+                if (item.Equals(null)) continue;
                 if (item.RowId == 0) continue;
 
                 var housingItem = new HousingItem(item, gameObject);

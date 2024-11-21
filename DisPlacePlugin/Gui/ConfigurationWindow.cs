@@ -1,7 +1,7 @@
 ﻿using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Utility;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using DisPlacePlugin.Objects;
 using System;
 using System.Collections.Generic;
@@ -361,7 +361,7 @@ namespace DisPlacePlugin.Gui
 
 
             var stain = DalamudApi.DataManager.GetExcelSheet<Stain>().GetRow(housingItem.Stain);
-            var colorName = stain?.Name;
+            var colorName = stain.Name;
 
             if (housingItem.Stain != 0)
             {
@@ -378,7 +378,7 @@ namespace DisPlacePlugin.Gui
             else if (housingItem.MaterialItemKey != 0)
             {
                 var item = DalamudApi.DataManager.GetExcelSheet<Item>().GetRow(housingItem.MaterialItemKey);
-                if (item != null)
+                if (!item.Equals(null))
                 {
                     if (!housingItem.DyeMatch) ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(0.5f, 0.5f, 0.5f, 1));
 
@@ -447,7 +447,7 @@ namespace DisPlacePlugin.Gui
 
 
                     var item = DalamudApi.DataManager.GetExcelSheet<Item>().GetRow(fixture.itemId);
-                    if (item != null)
+                    if (!item.Equals(null))
                     {
                         DrawIcon(item.Icon, new Vector2(20, 20));
                         ImGui.SameLine();
@@ -526,7 +526,7 @@ namespace DisPlacePlugin.Gui
                 var displayName = housingItem.Name;
 
                 var item = DalamudApi.DataManager.GetExcelSheet<Item>().GetRow(housingItem.ItemKey);
-                if (item != null)
+                if (!item.Equals(null))
                 {
                     DrawIcon(item.Icon, new Vector2(20, 20));
                     ImGui.SameLine();

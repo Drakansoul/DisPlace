@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.MJI;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using static DisPlacePlugin.DisPlacePlugin;
 
 namespace DisPlacePlugin
@@ -82,7 +82,7 @@ namespace DisPlacePlugin
             var territoryId = Memory.Instance.GetTerritoryTypeId();
             var row = DalamudApi.DataManager.GetExcelSheet<TerritoryType>().GetRow(territoryId);
 
-            if (row == null) return null;
+            if (row.Equals(null)) return null;
 
             var placeName = row.Name.ToString();
             var sizeName = placeName.Substring(1, 3);
@@ -282,7 +282,7 @@ namespace DisPlacePlugin
         public unsafe HousingArea GetCurrentTerritory() // this gets called every window draw for some reason, should probably looke to refactor to only call this when something needs to be changed or might have been updated.
         {
             var territoryRow = DalamudApi.DataManager.GetExcelSheet<TerritoryType>().GetRow(GetTerritoryTypeId());
-            if (territoryRow == null || territoryRow.Name.ToString().Equals("r1i5")) // blacklist company workshop from editing since it's not actually a housing area
+            if (territoryRow.Equals(null) || territoryRow.Name.ToString().Equals("r1i5")) // blacklist company workshop from editing since it's not actually a housing area
             {
                 return HousingArea.None;
             }
