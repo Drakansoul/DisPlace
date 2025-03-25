@@ -161,7 +161,7 @@ namespace DisPlacePlugin
     {
         [FieldOffset(0x030)] public fixed byte name[64];
         [FieldOffset(0x080)] public uint housingRowId;
-        [FieldOffset(0x84)] public uint OwnerID;
+        [FieldOffset(0x084)] public uint OwnerID;
         [FieldOffset(0x0B0)] public float X;
         [FieldOffset(0x0B4)] public float Y;
         [FieldOffset(0x0B8)] public float Z;
