@@ -2,7 +2,7 @@
   "Author": "Drakansoul",
   "Name": "DisPlace Plugin",
   "InternalName": "DisPlacePlugin",
-  "AssemblyVersion":"3.7.3",
+  "AssemblyVersion":"3.7.4",
   "Punchline": "Automatically save & load furniture layouts in ANY house.",
   "Description": "Automatically save & load the positions of house furniture. Copy other housing layouts. Import/export layouts from the MakePlace program.",
   "ApplicableVersion": "any",
@@ -15,13 +15,13 @@
     "drakansoul",
     "displace"
   ],
-  "DalamudApiLevel": 11,
+  "DalamudApiLevel": 12,
   "LoadPriority": 0,
   "IconUrl": "https://raw.githubusercontent.com/Drakansoul/DisPlaced/master/icon.png",
   "DownloadCount": 0,
-  "DownloadLinkInstall": "https://github.com/Drakansoul/DisPlaced/releases/download/v3.7.3/DisPlacePlugin.zip",
-  "DownloadLinkTesting": "https://github.com/Drakansoul/DisPlaced/releases/download/v3.7.3/DisPlacePlugin.zip",
-  "DownloadLinkUpdate": "https://github.com/Drakansoul/DisPlaced/releases/download/v3.7.3/DisPlacePlugin.zip",
+  "DownloadLinkInstall": "https://github.com/Drakansoul/DisPlaced/releases/download/v3.7.4/DisPlacePlugin.zip",
+  "DownloadLinkTesting": "https://github.com/Drakansoul/DisPlaced/releases/download/v3.7.4/DisPlacePlugin.zip",
+  "DownloadLinkUpdate": "https://github.com/Drakansoul/DisPlaced/releases/download/v3.7.4/DisPlacePlugin.zip",
   "_isDip17Plugin": false,
   "_Dip17Channel": null
 }]
