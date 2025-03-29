@@ -28,7 +28,7 @@ namespace DisPlacePlugin
         // Function for selecting an item, usually used when clicking on one in game.        
         public delegate void SelectItemDelegate(IntPtr housingStruct, IntPtr item);
         private static HookWrapper<SelectItemDelegate> SelectItemHook;
-        
+
 
         public delegate void ClickItemDelegate(IntPtr housingStruct, IntPtr item);
         private static HookWrapper<ClickItemDelegate> ClickItemHook;
@@ -52,7 +52,8 @@ namespace DisPlacePlugin
         {
 
             HookManager.Dispose();
-            try {
+            try
+            {
                 Memory.Instance.SetPlaceAnywhere(false);
             }
             catch (Exception ex)
@@ -114,7 +115,7 @@ namespace DisPlacePlugin
 
         }
 
-        
+
 
         internal delegate ushort GetIndexDelegate(byte type, byte objStruct);
         internal static HookWrapper<GetIndexDelegate> GetYardIndexHook;
@@ -149,10 +150,10 @@ namespace DisPlacePlugin
         {
             UpdateYardObjHook.Original(objectList, index);
         }
-        
+
         unsafe static public void SelectItemDetour(IntPtr housing, IntPtr item)
         {
-            DalamudApi.PluginLog.Debug(string.Format("selecting item {0}",item.ToString()));
+            DalamudApi.PluginLog.Debug(string.Format("selecting item {0}", item.ToString()));
             SelectItemHook.Original(housing, item);
         }
 
@@ -163,52 +164,52 @@ namespace DisPlacePlugin
         }
 
 
-        internal delegate void MaybePlaced(IntPtr housingPtr,IntPtr itemPtr, Int64 a); // @@@@@
+        internal delegate void MaybePlaced(IntPtr housingPtr, IntPtr itemPtr, Int64 a); // @@@@@
         internal static HookWrapper<MaybePlaced> MaybePlaceh;
-        unsafe static public void MaybePlacedt(IntPtr housingPtr,IntPtr itemPtr, Int64 a)
+        unsafe static public void MaybePlacedt(IntPtr housingPtr, IntPtr itemPtr, Int64 a)
         {
-            DalamudApi.PluginLog.Verbose(string.Format("maybe place {0} {1} {2}",(housingPtr+24).ToString(),itemPtr.ToString(),a.ToString()));
-            MaybePlaceh.Original(housingPtr,itemPtr,a);
+            DalamudApi.PluginLog.Verbose(string.Format("maybe place {0} {1} {2}", (housingPtr + 24).ToString(), itemPtr.ToString(), a.ToString()));
+            MaybePlaceh.Original(housingPtr, itemPtr, a);
         }
-        unsafe static public void MaybePlace(IntPtr housingPtr,IntPtr itemPtr, Int64 a) // ####
+        unsafe static public void MaybePlace(IntPtr housingPtr, IntPtr itemPtr, Int64 a) // ####
         {
-            MaybePlacedt(housingPtr,itemPtr,a);
+            MaybePlacedt(housingPtr, itemPtr, a);
         }
 
-        internal delegate void ResetItemPlacementd(IntPtr housingPtr,Int64 a); // @@@@@
+        internal delegate void ResetItemPlacementd(IntPtr housingPtr, Int64 a); // @@@@@
         internal static HookWrapper<ResetItemPlacementd> ResetItemPlacementh;
         unsafe static public void ResetItemPlacementdt(IntPtr housingPtr, Int64 a)
         {
-            DalamudApi.PluginLog.Debug(string.Format("Return item to previous location if placemnt is canceled {0}",housingPtr+24.ToString()));
-            ResetItemPlacementh.Original(housingPtr,a);
+            DalamudApi.PluginLog.Debug(string.Format("Return item to previous location if placemnt is canceled {0}", housingPtr + 24.ToString()));
+            ResetItemPlacementh.Original(housingPtr, a);
         }
-        unsafe static public void Hc1(IntPtr housingPtr,Int64 a) // ####
+        unsafe static public void Hc1(IntPtr housingPtr, Int64 a) // ####
         {
-            ResetItemPlacementdt(housingPtr,a);
+            ResetItemPlacementdt(housingPtr, a);
         }
-        
-        internal delegate void FinalizeHousingd(IntPtr housingPtr,Int64 a,IntPtr b); // @@@@@
+
+        internal delegate void FinalizeHousingd(IntPtr housingPtr, Int64 a, IntPtr b); // @@@@@
         internal static HookWrapper<FinalizeHousingd> FinalizeHousingh;
         unsafe static public void FinalizeHousingdt(IntPtr housingPtr, Int64 a, IntPtr b)
         {
-            DalamudApi.PluginLog.Verbose(string.Format("Finalize housing {0} {1} {2}",(housingPtr+24).ToString(),a.ToString(),b.ToString()));
-            FinalizeHousingh.Original(housingPtr,a,b);
+            DalamudApi.PluginLog.Verbose(string.Format("Finalize housing {0} {1} {2}", (housingPtr + 24).ToString(), a.ToString(), b.ToString()));
+            FinalizeHousingh.Original(housingPtr, a, b);
         }
-        unsafe static public void FinalizeHousing(IntPtr housingPtr,Int64 a,IntPtr b) // ####
+        unsafe static public void FinalizeHousing(IntPtr housingPtr, Int64 a, IntPtr b) // ####
         {
-            FinalizeHousingdt(housingPtr,a,b);
+            FinalizeHousingdt(housingPtr, a, b);
         }
-        
-        internal delegate void PlaceCalld(IntPtr housingPtr,Int64 a,IntPtr b); // @@@@@
+
+        internal delegate void PlaceCalld(IntPtr housingPtr, Int64 a, IntPtr b); // @@@@@
         internal static HookWrapper<PlaceCalld> PlaceCallh;
         unsafe static public void PlaceCalldt(IntPtr housingPtr, Int64 a, IntPtr b)
         {
-            DalamudApi.PluginLog.Verbose(string.Format("placeCall item {0} {1} {2}",(housingPtr+24).ToString(),a.ToString(),b.ToString()));
-            PlaceCallh.Original(housingPtr,a,b);
+            DalamudApi.PluginLog.Verbose(string.Format("placeCall item {0} {1} {2}", (housingPtr + 24).ToString(), a.ToString(), b.ToString()));
+            PlaceCallh.Original(housingPtr, a, b);
         }
-        unsafe static public void PlaceCall(IntPtr housingPtr,Int64 a,IntPtr b) // ####
+        unsafe static public void PlaceCall(IntPtr housingPtr, Int64 a, IntPtr b) // ####
         {
-            PlaceCalldt(housingPtr,a,b);
+            PlaceCalldt(housingPtr, a, b);
         }
 
         unsafe static public void ClickItemDetour(IntPtr housing, IntPtr item)
@@ -219,7 +220,7 @@ namespace DisPlacePlugin
             I tried passing the active item but I believe that doing so led to more crashes.
             As such I've just defaulted to the easier path of just passing in a zero pointer so that the call populates itself form the housing object.
             */
-            DalamudApi.PluginLog.Verbose(string.Format("attempting to place item {0}",(housing+24).ToString()));
+            DalamudApi.PluginLog.Verbose(string.Format("attempting to place item {0}", (housing + 24).ToString()));
             ClickItemHook.Original(housing, item);
         }
 
@@ -228,13 +229,14 @@ namespace DisPlacePlugin
         {
             ClickItemDetour((IntPtr)Memory.Instance.HousingStructure, item);
         }
-        
 
-        public unsafe void PlaceItems()
+
+        public unsafe void RecursivelyPlaceItems()
         {
 
             if (!Memory.Instance.CanEditItem() || ItemsToPlace.Count == 0)
             {
+                Cleanup();
                 return;
             }
 
@@ -258,13 +260,12 @@ namespace DisPlacePlugin
                         Log($"{item.Name} is already correctly placed");
                         continue;
                     }
-                    
+
                     SetItemPosition(item);
 
-                    if (Config.LoadInterval > 0)
-                    {
-                        Thread.Sleep(Config.LoadInterval);
-                    }
+                    Log($"Scheduling next item placement, {ItemsToPlace.Count} remains");
+                    DalamudApi.Framework.RunOnTick(RecursivelyPlaceItems, TimeSpan.FromMilliseconds(Config.LoadInterval));
+                    return;
 
                 }
 
@@ -279,7 +280,12 @@ namespace DisPlacePlugin
                 LogError($"Error: {e.Message}", e.StackTrace);
             }
 
-            CurrentlyPlacingItems = false;
+            Cleanup();
+            void Cleanup()
+            {
+                Memory.Instance.SetPlaceAnywhere(false);
+                CurrentlyPlacingItems = false;
+            }
         }
 
         unsafe public static void SetItemPosition(HousingItem rowItem)
@@ -301,9 +307,10 @@ namespace DisPlacePlugin
             SelectItem(rowItem.ItemStruct);
 
             var thisItem = MemInstance.HousingStructure->ActiveItem;
-            if (thisItem == null) {
-                    DalamudApi.PluginLog.Error("Error occured while writing position! Item Was null");
-                    return;
+            if (thisItem == null)
+            {
+                DalamudApi.PluginLog.Error("Error occured while writing position! Item Was null");
+                return;
             }
 
             Log("Placing " + rowItem.Name);
@@ -377,8 +384,7 @@ namespace DisPlacePlugin
             ItemsToPlace.AddRange(placedLast);
 
 
-            var thread = new Thread(PlaceItems);
-            thread.Start();
+            RecursivelyPlaceItems();
         }
 
         public bool MatchItem(HousingItem item, uint itemKey)
@@ -562,13 +568,16 @@ namespace DisPlacePlugin
         {
             var mgr = Memory.Instance.HousingModule->outdoorTerritory;
             var plotNumber = mgr->Plot + 1;
-            if (plotNumber == 256) {
+            if (plotNumber == 256)
+            {
                 LogError("Not inside a valid Plot");
                 PlotLocation = new Location();
                 return;
-            } else {
-                
-            DalamudApi.PluginLog.Debug($"Housing plot: {plotNumber}");
+            }
+            else
+            {
+
+                DalamudApi.PluginLog.Debug($"Housing plot: {plotNumber}");
             }
             var territoryId = Memory.Instance.GetTerritoryTypeId();
             TerritoryType row = DalamudApi.DataManager.GetExcelSheet<TerritoryType>().GetRow(territoryId);
@@ -579,7 +588,7 @@ namespace DisPlacePlugin
             }
 
             var placeName = row.Name.ToString();
-            
+
             DalamudApi.PluginLog.Info($"Loading Plot Number: {plotNumber}");
             PlotLocation = Plots.Map[placeName][plotNumber];
         }
@@ -622,28 +631,29 @@ namespace DisPlacePlugin
                 var xMax = 0.0;
                 var yMax = 7.0;
                 var zMax = 0.0;
-                switch (PlotLocation.size){ 
+                switch (PlotLocation.size)
+                {
                     case "l": //largest dimensions mist L
-                    xMax = 20.5;
-                    zMax = 24.5;
-                    break;
+                        xMax = 20.5;
+                        zMax = 24.5;
+                        break;
                     case "m":
-                    xMax = 16.5;
-                    zMax = 16.5;
-                    break;
+                        xMax = 16.5;
+                        zMax = 16.5;
+                        break;
                     case "s":
-                    xMax = 12.5;
-                    zMax = 12.5;
-                    break;
+                        xMax = 12.5;
+                        zMax = 12.5;
+                        break;
                     default:
-                    yMax = 0;
-                    break;
+                        yMax = 0;
+                        break;
                 }
 
 
                 var housingItem = new HousingItem(item.Value, gameObject);
                 housingItem.ItemStruct = (IntPtr)gameObject.Item;
-                
+
                 var location = new Vector3(housingItem.X, housingItem.Y, housingItem.Z);
                 var newLocation = Vector3.Transform(location - PlotLocation.ToVector(), rotateVector);
 
@@ -652,9 +662,12 @@ namespace DisPlacePlugin
                 housingItem.Z = newLocation.Z;
                 housingItem.Rotate += PlotLocation.rotation;
 
-                if (!(Math.Abs(housingItem.X) > xMax|| Math.Abs(housingItem.Y) > yMax|| Math.Abs(housingItem.Z) > zMax)) { 
+                if (!(Math.Abs(housingItem.X) > xMax || Math.Abs(housingItem.Y) > yMax || Math.Abs(housingItem.Z) > zMax))
+                {
                     ExteriorItemList.Add(housingItem);
-                } else {
+                }
+                else
+                {
                     DalamudApi.PluginLog.Verbose($"Discarding item: {housingItem.Name} at ({housingItem.X},{housingItem.Y},{housingItem.Z})");
                 }
             }
