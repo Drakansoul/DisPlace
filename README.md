@@ -1,6 +1,6 @@
 # DisPlace Plugin
 This is a modification of [MakePlacePlugin](https://github.com/jawslouis/MakePlacePlugin) for personal use. I make no assurances that this will work or that I will keep it updated as I mainly just wanted to enable features that were disabled in makeplace and enable the plugin for the current version of FFXIV.
-A plugin to automatically save and load housing furniture layouts for FFXIV. It can also import/export layouts from the [MakePlace](https://jawslouis.itch.io/makeplace) program since it uses the same file format.
+A plugin to automatically save and load housing furniture layouts for FFXIV. It can also import/export layouts from the original and now deprecated [MakePlace](https://jawslouis.itch.io/makeplace) program as well as the maintained [ReMakePlace](https://github.com/RemakePlace/app) since it uses the same file format.
 
 ## Contents
 * [Installation](#installation)
@@ -48,7 +48,7 @@ Type `/makeplace` to open the plugin screen. Most functions are only available w
 
 ## FAQ
 ### Help! I can't get the plugin to work.
-While we could probably help you out. Try the original version of the plugin (if it's updated) and see if you still have the issue. If the issue still presents itself then create a github issue or post on the [discord channel](https://discord.gg/YuvcPzCuhq) for help with troubleshooting.
+While we could probably help you out. Try the original version of the plugin (if it's updated) and see if you still have the issue. If the issue still presents itself then create a github issue or post in the [discord](https://discord.gg/aMAVmaQAzY) for help with troubleshooting.
 
 ### Does the plugin work if the game is not in English?
 Yes! Saving, loading, and transferring layouts will work in all languages.
@@ -60,7 +60,7 @@ Yes. Of course you can. Unlike the original plugin we do not believe that this i
 It uses the furniture that is already placed in the house. It won't touch your inventory or storage, so there's no worries about messing up inventory management. Also, since placing furniture binds it and makes it untradeable, it's best that the player does it directly.
 
 ### Is it safe to use the plugin?
-Probably, but no promises. 
+Probably, though it does allow you to place furniture in ways that would otherwise be impossible.
 
 ### How do I update the plugin?
 Harrass me until I update the plugin because I prertty much onyl update it when I need it myself otherwise.
