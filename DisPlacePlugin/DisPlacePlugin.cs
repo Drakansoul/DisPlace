@@ -89,7 +89,7 @@ namespace DisPlacePlugin
             Memory.Instance.SetPlaceAnywhere(true);
             LayoutManager = new SaveLayoutManager(this, Config);
 
-            DalamudApi.PluginLog.Info("DisPlace Plugin v3.7.4 initialized");
+            DalamudApi.PluginLog.Info("DisPlace Plugin v7.2.1 initialized");
         }
         public void Initialize()
         {
