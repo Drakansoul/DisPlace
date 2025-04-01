@@ -63,7 +63,7 @@ It uses the furniture that is already placed in the house. It won't touch your i
 Probably, though it does allow you to place furniture in ways that would otherwise be impossible.
 
 ### How do I update the plugin?
-Harrass me until I update the plugin because I prertty much onyl update it when I need it myself otherwise.
+Bother me until I update the plugin if I've somehow not already done so. I update the ReMakePlace Plugin as well as occaisonally help with BDTH soi should usually be on top of updates.
 
 ### Why does the furniture snap back to the floor/wall after I apply a layout and exit the furnishing menu?
 Items have a minimum float distance, below which they will snap back to the floor. Similarly, wall-mounted items have a minimum distance they need to be from a wall or partition, otherwise they will snap to it. Unfortunately, this is a game limitation and you will need to adjust your design.
