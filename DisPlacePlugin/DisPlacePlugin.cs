@@ -108,7 +108,7 @@ namespace DisPlacePlugin
 
             GetYardIndexHook = HookManager.Hook<GetIndexDelegate>("48 89 5C 24 ?? ?? 48 83 ec 20 0f b6 ?? 0f b6 ?? 84 ??", GetYardIndex);
 
-            MaybePlaceh = HookManager.Hook<MaybePlaced>("40 55 56 57 48 8D AC 24 70 FF FF FF 48 81 EC 90 01 00 00 48 8B 05 BE 29 7E 01 48 33 C4 48 89 45", MaybePlace); // MaybePlace0 // They added two methods with similar signatures in 7.2
+            MaybePlaceh = HookManager.Hook<MaybePlaced>("40 55 56 57 48 8D AC 24 70 FF FF FF 48 81 EC 90 01 00 00 48 8B", MaybePlace); // MaybePlace0 // They added two methods with similar signatures in 7.2
             ResetItemPlacementh = HookManager.Hook<ResetItemPlacementd>("48 89 5C 24 08 57 48 83  EC 20 48 83 79 18 00 0F", Hc1); // reset item to previous position on failed placement
             FinalizeHousingh = HookManager.Hook<FinalizeHousingd>("40 55 56 41 56 48 83 EC 20 48 63 EA 48 8B F1 8B", FinalizeHousing); // finalize housing placement on interface close
             PlaceCallh = HookManager.Hook<PlaceCalld>("40 53 48 83 Ec 20 48 8B 51 18 48 8B D9 48 85 D2 0F 84 B1 00 00 00", PlaceCall); // branch b place
