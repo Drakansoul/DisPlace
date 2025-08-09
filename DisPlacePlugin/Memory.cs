@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.MJI;
 using Lumina.Excel.Sheets;
-using static DisPlacePlugin.DisPlacePlugin;
 
 namespace DisPlacePlugin
 {
