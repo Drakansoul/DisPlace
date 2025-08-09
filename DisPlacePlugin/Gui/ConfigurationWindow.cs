@@ -1,6 +1,6 @@
 ﻿using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Utility;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using DisPlacePlugin.Objects;
 using System;
@@ -111,7 +111,7 @@ namespace DisPlacePlugin.Gui
             if (icon < 65000)
             {
                 var iconTexture = DalamudApi.TextureProvider.GetFromGameIcon(new GameIconLookup(icon));
-                ImGui.Image(iconTexture.GetWrapOrEmpty().ImGuiHandle, size);
+                ImGui.Image(iconTexture.GetWrapOrEmpty().Handle, size);
             }
         }
         #endregion

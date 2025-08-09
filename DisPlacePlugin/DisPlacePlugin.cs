@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Threading;
 using static DisPlacePlugin.Memory;
 using HousingFurniture = Lumina.Excel.Sheets.HousingFurniture;
 
@@ -89,7 +88,7 @@ namespace DisPlacePlugin
             Memory.Instance.SetPlaceAnywhere(true);
             LayoutManager = new SaveLayoutManager(this, Config);
 
-            DalamudApi.PluginLog.Info("DisPlace Plugin v7.21.1 initialized");
+            DalamudApi.PluginLog.Info("DisPlace Plugin v7.3.0 initialized");
         }
         public void Initialize()
         {
