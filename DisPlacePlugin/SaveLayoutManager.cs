@@ -283,7 +283,7 @@ namespace DisPlacePlugin
 
             foreach (var stain in StainList)
             {
-                if (stain.Unknown2) // bool for whether the dye can be used for housing
+                if (stain.IsHousingApplicable) // bool for whether the dye can be used for housing
                 {
                     ColorList.Add((Color.FromArgb((int)stain.Color), stain.RowId));
                 }

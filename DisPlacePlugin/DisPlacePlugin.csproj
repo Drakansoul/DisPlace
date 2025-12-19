@@ -1,8 +1,8 @@
-﻿<Project Sdk="Dalamud.NET.Sdk/13.0.0">
+﻿<Project Sdk="Dalamud.NET.Sdk/14.0.1">
 
 	<PropertyGroup>
-		<PluginVersion>7.3.0</PluginVersion>
-		<TargetFramework>net9.0-windows</TargetFramework>
+		<PluginVersion>7.4.0</PluginVersion>
+		<TargetFramework>net10.0-windows7.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<AssemblyTitle>DisPlacePlugin</AssemblyTitle>
 		<Product>DisPlacePlugin</Product>
@@ -35,7 +35,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DalamudPackager" Version="13.0.0" />
+		<PackageReference Include="DalamudPackager" Version="14.0.1" />
 	</ItemGroup>
 
 
@@ -60,6 +60,11 @@
 			<HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39" />
 	</ItemGroup>
 
 </Project>
