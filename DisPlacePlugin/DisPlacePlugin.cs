@@ -21,8 +21,6 @@ namespace DisPlacePlugin
         public static List<HousingItem> ItemsToPlace = new List<HousingItem>();
 
         private delegate bool UpdateLayoutDelegate(IntPtr a1);
-        private HookWrapper<UpdateLayoutDelegate> IsSaveLayoutHook;
-
 
         // Function for selecting an item, usually used when clicking on one in game.        
         public delegate void SelectItemDelegate(IntPtr housingStruct, IntPtr item);
@@ -60,7 +58,6 @@ namespace DisPlacePlugin
                 DalamudApi.PluginLog.Error(ex, "Error while calling PluginMemory.Dispose()");
             }
 
-            DalamudApi.ClientState.TerritoryChanged -= TerritoryChanged;
             DalamudApi.CommandManager.RemoveHandler("/displace");
             Gui?.Dispose();
 
@@ -80,7 +77,6 @@ namespace DisPlacePlugin
                 HelpMessage = "load config window."
             });
             Gui = new PluginUi(this);
-            DalamudApi.ClientState.TerritoryChanged += TerritoryChanged;
 
 
             HousingData.Init(this);
@@ -92,20 +88,15 @@ namespace DisPlacePlugin
         }
         public void Initialize()
         {
-
-            IsSaveLayoutHook = HookManager.Hook<UpdateLayoutDelegate>("40 53 48 83 ec 20 48 8b d9 48 8b 0d ?? ?? ?? ?? e8 ?? ?? ?? ?? 33 d2 48 8b c8 e8 ?? ?? ?? ?? 84 c0 75 ?? 38 83 ?? 01 00 00", IsSaveLayoutDetour);
-
-            SelectItemHook = HookManager.Hook<SelectItemDelegate>("48 85 D2 0F 84 49 09 00 00 53 41 56 48 83 EC 48 48 89 6C 24 60 48 8B DA 48 89 74 24 70 4C 8B F1", SelectItemDetour);
+            SelectItemHook = HookManager.Hook<SelectItemDelegate>("48 85 D2 0F 84 ?? ?? ?? ?? 53 41 56 48 83 EC ?? 48 89 6C 24", SelectItemDetour);
 
             ClickItemHook = HookManager.Hook<ClickItemDelegate>("48 89 5C 24 10 48 89 74  24 18 57 48 83 EC 20 4c 8B 41 18 33 FF 0F B6 F2", ClickItemDetour);
 
-            UpdateYardObjHook = HookManager.Hook<UpdateYardDelegate>("48 89 74 24 18 57 48 83 ec 20 b8 dc 02 00 00 0f b7 f2 ??", UpdateYardObj);
+            GetGameObjectHook = HookManager.Hook<GetObjectDelegate>("E8 ?? ?? ?? ?? EB ?? 48 3D", GetGameObject);
 
-            GetGameObjectHook = HookManager.Hook<GetObjectDelegate>("48 89 5c 24 08 48 89 74 24 10 57 48 83 ec 20 0f b7 f2 33 db 0f 1f 40 00 0f 1f 84 00 00 00 00 00", GetGameObject);
+            GetObjectFromIndexHook = HookManager.Hook<GetActiveObjectDelegate>("E8 ?? ?? ?? ?? EB ?? 41 0F B7 D0", GetObjectFromIndex);
 
-            GetObjectFromIndexHook = HookManager.Hook<GetActiveObjectDelegate>("81 fa 90 01 00 00 75 08 48 8b 81 88 0c 00 00 c3 0f b7 81 90 0c 00 00 3b d0 72 03 33 c0 c3", GetObjectFromIndex);
-
-            GetYardIndexHook = HookManager.Hook<GetIndexDelegate>("48 89 5C 24 ?? ?? 48 83 ec 20 0f b6 ?? 0f b6 ?? 84 ??", GetYardIndex);
+            GetYardIndexHook = HookManager.Hook<GetIndexDelegate>("E8 ?? ?? ?? ?? 44 0F B7 D8", GetYardIndex);
 
             MaybePlaceh = HookManager.Hook<MaybePlaced>("40 55 56 57 48 8D AC 24 70 FF FF FF 48 81 EC 90 01 00 00 48 8B", MaybePlace); // MaybePlace0 // They added two methods with similar signatures in 7.2
             ResetItemPlacementh = HookManager.Hook<ResetItemPlacementd>("48 89 5C 24 08 57 48 83  EC 20 48 83 79 18 00 0F", Hc1); // reset item to previous position on failed placement
@@ -116,9 +107,9 @@ namespace DisPlacePlugin
 
 
 
-        internal delegate ushort GetIndexDelegate(byte type, byte objStruct);
+        internal delegate ushort GetIndexDelegate(byte plotNumber, ushort inventoryIndex);
         internal static HookWrapper<GetIndexDelegate> GetYardIndexHook;
-        internal static ushort GetYardIndex(byte plotNumber, byte inventoryIndex)
+        internal static ushort GetYardIndex(byte plotNumber, ushort inventoryIndex)
         {
             var result = GetYardIndexHook.Original(plotNumber, inventoryIndex);
             return result;
@@ -139,15 +130,6 @@ namespace DisPlacePlugin
         internal static IntPtr GetGameObject(IntPtr ObjList, ushort index)
         {
             return GetGameObjectHook.Original(ObjList, index);
-        }
-
-        public delegate void UpdateYardDelegate(IntPtr housingStruct, ushort index);
-        private static HookWrapper<UpdateYardDelegate> UpdateYardObjHook;
-
-
-        private void UpdateYardObj(IntPtr objectList, ushort index)
-        {
-            UpdateYardObjHook.Original(objectList, index);
         }
 
         unsafe static public void SelectItemDetour(IntPtr housing, IntPtr item)
@@ -598,7 +580,7 @@ namespace DisPlacePlugin
             SaveLayoutManager.LoadExteriorFixtures();
 
             List<HousingGameObject> objects;
-            var playerPos = DalamudApi.ClientState.LocalPlayer.Position;
+            var playerPos = DalamudApi.ObjectTable.LocalPlayer.Position;
             Memory.Instance.GetExteriorPlacedObjects(out objects, playerPos);
             ExteriorItemList.Clear();
             GetPlotLocation();
@@ -784,21 +766,6 @@ namespace DisPlacePlugin
             Config.HiddenScreenItemHistory = new List<int>();
             Config.Save();
         }
-
-
-        public bool IsSaveLayoutDetour(IntPtr housingStruct)
-        {
-            var result = IsSaveLayoutHook.Original(housingStruct);
-
-            if (ApplyChange)
-            {
-                ApplyChange = false;
-                return true;
-            }
-
-            return result;
-        }
-
 
         private void TerritoryChanged(ushort e)
         {

@@ -46,11 +46,8 @@ namespace DisPlacePlugin
     // Just easier to move around and can have methods
     public struct CommonLandSet
     {
-        public uint LandRange;
+        public uint MapRange;
         public uint PlacardId;
-
-        public uint UnknownRange1;
-
         public uint InitialPrice;
         public byte Size;
         public int PlotIndex;
@@ -58,9 +55,8 @@ namespace DisPlacePlugin
         public static CommonLandSet FromExd(HousingLandSet.LandSetStruct lset, int index)
         {
             var ret = new CommonLandSet();
-            ret.LandRange = lset.UnknownRange1;
+            ret.MapRange = lset.MapRange;
             ret.PlacardId = lset.PlacardId;
-            ret.UnknownRange1 = lset.UnknownRange1;
             ret.InitialPrice = lset.InitialPrice;
             ret.Size = lset.PlotSize;
             ret.PlotIndex = index;
@@ -174,18 +170,18 @@ namespace DisPlacePlugin
     [StructLayout(LayoutKind.Explicit)]
     public unsafe struct HousingObjectManager
     {
-        [FieldOffset(0x0010)] public IntPtr ObjectList;
-        [FieldOffset(0x8980)] public fixed ulong Objects[400];
+        [FieldOffset(0x00010)] public IntPtr ObjectList;
+        [FieldOffset(0x11260)] public fixed ulong Objects[600];
 
-        [FieldOffset(0x96A2)] public byte Ward;
-        [FieldOffset(0x96A8)] public byte Plot;
+        [FieldOffset(0x125D2)] public byte Ward;
+        [FieldOffset(0x125D8)] public byte Plot;
 
-        [FieldOffset(0x96E8)] public HousingGameObject* IndoorActiveObject2;
-        [FieldOffset(0x96F0)] public HousingGameObject* IndoorHoverObject;
-        [FieldOffset(0x96F8)] public HousingGameObject* IndoorActiveObject;
-        [FieldOffset(0x9AB8)] public HousingGameObject* OutdoorActiveObject2;
-        [FieldOffset(0x9AC0)] public HousingGameObject* OutdoorHoverObject;
-        [FieldOffset(0x9AC8)] public HousingGameObject* OutdoorActiveObject;
+        [FieldOffset(0x12618)] public HousingGameObject* IndoorActiveObject2;
+        [FieldOffset(0x12620)] public HousingGameObject* IndoorHoverObject;
+        [FieldOffset(0x12628)] public HousingGameObject* IndoorActiveObject;
+        [FieldOffset(0x129E8)] public HousingGameObject* OutdoorActiveObject2;
+        [FieldOffset(0x129F0)] public HousingGameObject* OutdoorHoverObject;
+        [FieldOffset(0x129F8)] public HousingGameObject* OutdoorActiveObject;
 
         public static HousingItemInfo* GetItemInfo(HousingObjectManager* mgr, int index)
         {

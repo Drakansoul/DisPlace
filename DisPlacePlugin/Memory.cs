@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.Arm;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.MJI;
+using FFXIVClientStructs.FFXIV.Client.LayoutEngine;
 using Lumina.Excel.Sheets;
 
 namespace DisPlacePlugin
@@ -24,7 +26,7 @@ namespace DisPlacePlugin
             try
             {
                 // Assembly address for asm rewrites.
-                placeAnywhere = DalamudApi.SigScanner.ScanText("C6 ?? ?? ?? 00 00 00 8B FE 48 89") + 6;
+                placeAnywhere = DalamudApi.SigScanner.ScanText("C6 83 ?? ?? ?? ?? ?? 0F 29 44 24") + 6;
                 wallAnywhere = DalamudApi.SigScanner.ScanText("48 85 C0 74 ?? C6 87 ?? ?? 00 00 00") + 11;
                 wallmountAnywhere = DalamudApi.SigScanner.ScanText("c6 87 83 01 00 00 00 48 83 c4 ??") + 6;
 
@@ -84,20 +86,20 @@ namespace DisPlacePlugin
             if (row.Equals(null)) return null;
 
             var placeName = row.Name.ToString();
-            var sizeName = placeName.Substring(1, 3);
+            var sizeName = placeName.Substring(2, 2);
 
             switch (sizeName)
             {
-                case "1i1":
+                case "i1":
                     return "Small";
 
-                case "1i2":
+                case "i2":
                     return "Medium";
 
-                case "1i3":
+                case "i3":
                     return "Large";
 
-                case "1i4":
+                case "i4":
                     return "Apartment";
 
                 default:
@@ -221,7 +223,7 @@ namespace DisPlacePlugin
                 return false;
 
             objects = new List<HousingGameObject>();
-            for (var i = 0; i < 400; i++)
+            for (var i = 0; i < 600; i++)
             {
                 var oPtr = HousingModule->GetCurrentManager()->Objects[i];
                 if (oPtr == 0)

@@ -577,7 +577,7 @@ namespace DisPlacePlugin.Gui
 
             for (int i = 0; i < itemList.Count(); i++)
             {
-                var playerPos = DalamudApi.ClientState.LocalPlayer.Position;
+                var playerPos = DalamudApi.ObjectTable.LocalPlayer.Position;
                 var housingItem = itemList[i];
 
                 if (housingItem.ItemStruct == IntPtr.Zero) continue;
