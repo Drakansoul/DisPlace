@@ -2,7 +2,7 @@
   "Author": "Drakansoul",
   "Name": "DisPlace Plugin",
   "InternalName": "DisPlacePlugin",
-  "AssemblyVersion":"7.5.1",
+  "AssemblyVersion":"7.5.1.0",
   "Punchline": "Automatically save & load furniture layouts in ANY house.",
   "Description": "Automatically save & load the positions of house furniture. Copy other housing layouts. Import/export layouts from the MakePlace program.",
   "ApplicableVersion": "any",
