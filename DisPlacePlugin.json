@@ -6,7 +6,7 @@
   "Punchline": "Automatically save & load furniture layouts in ANY house.",
   "Description": "Automatically save & load the positions of house furniture. Copy other housing layouts. Import/export layouts from the MakePlace program.",
   "ApplicableVersion": "any",
-  "RepoUrl": "https://github.com/Drakansoul/DisPlaced",
+  "RepoUrl": "https://github.com/Drakansoul/DisPlace",
   "Tags": [
     "makeplace",
     "housing",
